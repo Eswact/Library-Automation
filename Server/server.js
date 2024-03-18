@@ -40,14 +40,6 @@ db.mongoose
   });
 
 // route
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to Server." });
-});
-
-const routeModules = [
-  { path: "/api/books", module: require("./app/routes/books-routes") }
-];
-
-routeModules.forEach(({ path, module }) => {
-  app.use(path, module);
-});
+app.get("/", (req, res) => { res.json({ message: "Welcome to Server." }); });
+app.use("/api", require("./app/routes/index.js"));
+console.log(require("./app/routes/index.js"))
