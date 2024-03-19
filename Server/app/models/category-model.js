@@ -3,7 +3,6 @@ module.exports = mongoose => {
       "categories",
       mongoose.Schema(
         {
-          _id: String,
           catId: Number,
           name: String
         },

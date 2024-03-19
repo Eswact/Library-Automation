@@ -3,11 +3,13 @@ module.exports = mongoose => {
       "books",
       mongoose.Schema(
         {
-          _id: String,
           name: String,
           writer: String,
+          publisher: String,
           category: Number,
-          image: String
+          isBorrowed: Boolean,
+          images: Array,
+          subject: String
         },
         { timestamps: true }
       )

@@ -1,7 +1,7 @@
 const books = require("../controllers/books-controller.js");
 const endpoints= [
-    // Retrieve all Categories
-    { method: "get", path: "published", func: books.findAll }
+    { method: "get", path: "published", func: books.findAll },
+    { method: "post", path: "find/:id", func: books.findOne }
 ]
 
 module.exports = endpoints;

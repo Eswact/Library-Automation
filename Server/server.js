@@ -42,4 +42,3 @@ db.mongoose
 // route
 app.get("/", (req, res) => { res.json({ message: "Welcome to Server." }); });
 app.use("/api", require("./app/routes/index.js"));
-console.log(require("./app/routes/index.js"))
