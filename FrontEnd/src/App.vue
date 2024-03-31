@@ -1,5 +1,23 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+import { onMounted } from 'vue'
+import axios from 'axios';
+import VueJwtDecode from 'vue-jwt-decode';
+
+onMounted(() => {
+  loginUser();
+});
+
+const loginUser = async () => {
+  try {
+    const response = await axios.post('http://localhost:3000/api/users/login', {username: "test", password: "test"});
+    const token = response.data;
+    const decodedToken = VueJwtDecode.decode(token);
+    console.log(decodedToken);
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
+};
 </script>
 
 <template>

@@ -1,5 +1,6 @@
 const db = require("../models");
 const users = db.users;
+const jwt = require('../services/auth-service');
 
 // Get all users from the database.
 const findAll = async (req, res) => {
@@ -12,11 +13,12 @@ const findAll = async (req, res) => {
 };
 
 // Login
-const login = async (req, res) => {
+const login = async (req, res) => { 
   try {
     const currentUser = await users.findOne({ username: req.body.username, password: req.body.password });
     if (currentUser != null) {
-      res.json(currentUser);
+      const token = jwt.generateToken(currentUser);
+      res.json(token);
     }
     else {
       return res.status(404).send({ message: "User Not found." });
