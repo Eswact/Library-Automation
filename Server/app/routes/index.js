@@ -3,6 +3,7 @@ const router = express.Router();
 const bookRoutes = require("./book-routes");
 const categoryRoutes = require("./category-routes");
 const userRoutes = require("./user-routes");
+const homeRoutes = require("./home-routes");
 
 
 chooseMethod = (method, path, func) => { 
@@ -32,6 +33,9 @@ categoryRoutes.forEach(({ method, path, func }) => {
 });
 userRoutes.forEach(({ method, path, func }) => {
     chooseMethod(method, `/users/${path}`, func);
+});
+homeRoutes.forEach(({ method, path, func }) => {
+    chooseMethod(method, `/home/${path}`, func);
 });
 
 module.exports = router;
