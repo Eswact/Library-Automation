@@ -70,5 +70,5 @@ const loginUser = async () => {
         <button class="border-[1px] px-[20px] py-[5px] rounded-[12px] text-[17px] font-semibold shadow-md">Giriş</button>
       </div>
   </header>
-  <RouterView />
+  <RouterView class="mt-[100px]"/>
 </template>

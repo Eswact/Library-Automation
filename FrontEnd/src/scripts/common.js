@@ -11,8 +11,9 @@ function getlocalstorage(tmpname) {
     return tmp_dbvalue;
 }
 
-function getBannerImage(filePath) {
-    return `http://localhost:3000/uploads/banners/${filePath}`;
+let uploadsUrl = "http://localhost:3000/uploads/";
+function getImageFromUploads(filePath) {
+    return `http://localhost:3000/uploads/${filePath}`;
 }
 
-export { setlocalstorage, getlocalstorage, getBannerImage };
+export { setlocalstorage, getlocalstorage, getImageFromUploads };
