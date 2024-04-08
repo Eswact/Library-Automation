@@ -8,9 +8,9 @@ export default {
         'dark': '#1A1423',
         'text': '#1A1A2F',
         'main': '#24244F',
-        'second': '#FFC409',
+        'second': '#EEC681',
         'main-shadow': '#24244F5e',
-        'second-shadow': '#FFC4095e',
+        'second-shadow': '#EEC6815e',
       },
     },
     screens: {

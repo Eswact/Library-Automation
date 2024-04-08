@@ -66,7 +66,7 @@
                 </div>
             </swiper-slide>
         </swiper>
-        <div class="w-full px-[40px] py-[10px] box-border max-w-[100rem]">
+        <div class="w-full px-[40px] md:px-[10px] py-[10px] box-border max-w-[100rem]">
             <swiper
                 :slidesPerView="5"
                 :spaceBetween="50"
