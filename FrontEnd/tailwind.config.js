@@ -5,11 +5,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        'main': '#1C424F',
-        'second': '#EE605F',
-        'dark': '#181818',
-        'main-shadow': '#1c424f5e',
-        'second-shadow': '#ee5d5d5e',
+        'dark': '#1A1423',
+        'text': '#1A1A2F',
+        'main': '#24244F',
+        'second': '#FFC409',
+        'main-shadow': '#24244F5e',
+        'second-shadow': '#FFC4095e',
       },
     },
     screens: {

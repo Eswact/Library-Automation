@@ -48,11 +48,15 @@
             :pagination="{
                 clickable: true,
             }"
+            :autoplay="{
+                delay: 2500,
+                disableOnInteraction: false,
+            }"
             :modules="modules"
-            class="w-full h-[400px]"
+            class="w-full h-[380px]"
             ref="swiperRef"
         >
-            <swiper-slide v-for="(item, index) in bannerContent" :key="index" class="w-full h-full pb-[30px]">
+            <swiper-slide v-for="(item, index) in bannerContent" :key="index" class="w-full h-full">
                 <div class="w-full h-full relative">
                     <img :src="getImageFromUploads(`banners/${item.img}`)" alt="slide" class="w-full h-full"/>
                     <div class="absolute w-full box-border p-[20px] bottom-0 h-[120px] bg-gradient-to-t from-[rgb(0,0,0)] to-green-[rgb(18,18,18)] ">

@@ -3,7 +3,7 @@
 /* dark mode toggle start */
 .toggle {
     font-size: 1.1rem;
-    border: .125em solid #181818;
+    border: .125em solid #24244F;
     border-radius: 2em;
     cursor: pointer;
     display: block;
@@ -12,7 +12,7 @@
     width: 4em;
 }
 .toggle span {
-    background-color: #181818;
+    background-color: #24244F;
     border-radius: 2em;
     display: block;
     height: 1.5em;
@@ -34,7 +34,7 @@
     z-index: 1;
 }
 .toggle::after {
-    box-shadow: .25em .25em #5901d8;
+    box-shadow: .25em .25em #ffc409;
     height: 1.125em;
     right: .9em;
     top: .125em;
