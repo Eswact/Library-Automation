@@ -7,10 +7,12 @@ export default {
       colors: {
         'dark': '#1A1423',
         'text': '#1A1A2F',
-        'main': '#24244F',
+        'main': '#2894B5',
         'second': '#EEC681',
-        'main-shadow': '#24244F5e',
+        'main-shadow': '#2894B55e',
         'second-shadow': '#EEC6815e',
+        'green': '#4FB477',
+        'green-shadow': '#4FB4775e',
       },
     },
     screens: {
