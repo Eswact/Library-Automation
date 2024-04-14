@@ -3,7 +3,7 @@ import { RouterLink, RouterView } from 'vue-router'
 import { onMounted } from 'vue'
 import axios from 'axios';
 import VueJwtDecode from 'vue-jwt-decode';
-import { setlocalstorage, getlocalstorage } from './scripts/common';
+import { setlocalstorage, getlocalstorage, validateEmail } from './scripts/common';
 
 onMounted(() => {
   // dark-mode
@@ -43,15 +43,12 @@ onMounted(() => {
     });
   });
   document.querySelector('.sign-button').click();
-  document.getElementById('login-button').addEventListener('click', () => {
-    event.preventDefault();
-    const username = document.querySelector('.sign-section[data-section="1"] input[type="text"]').value;
-    const password = document.querySelector('.sign-section[data-section="1"] input[type="password"]').value;
-    loginUser(username, password);
-  });
 });
 
-const loginUser = async (username, password) => {
+const loginUser = async () => {
+  const username = document.querySelector('.sign-section[data-section="1"] input[type="text"]').value;
+  const password = document.querySelector('.sign-section[data-section="1"] input[type="password"]').value;
+  if (username == '' || password == '') return alert('Kullanıcı adı veya şifre boş olamaz.');
   try {
     const response = await axios.post('http://localhost:3000/api/users/login', {username: username, password: password});
     const token = response.data;
@@ -64,6 +61,26 @@ const loginUser = async (username, password) => {
     document.querySelector('.sign-section[data-section="1"] input[type="text"]').value = '';
     document.querySelector('.sign-section[data-section="1"] input[type="password"]').value = '';
     alert('Giriş Başarısız! Kullanıcı adı veya şifre hatalı.');
+  }
+};
+
+const registerUser = async () => {
+  const username = document.querySelector('.sign-section[data-section="2"] input[type="text"]').value;
+  const mail = document.querySelector('.sign-section[data-section="2"] input[type="mail"]').value;
+  const password = document.querySelector('.sign-section[data-section="2"] input[type="password"]').value;
+  if (username == '' || mail == '' || password == '') return alert('Kullanıcı adı, e-mail veya şifre boş olamaz.');
+  if (!validateEmail(mail)) return alert('Geçerli bir e-mail adresi giriniz.');
+  try {
+    const response = await axios.post('http://localhost:3000/api/users/register', {username: username, mail: mail, password: password});
+    if (response.status == 200) alert('Kayıt Başarılı! Hoşgeldin ' + response.data.username);
+    else alert(`${response.message}`);
+    closeForm();
+  } catch (error) {
+    console.error('Error:', error.message);
+    document.querySelector('.sign-section[data-section="2"] input[type="text"]').value = '';
+    document.querySelector('.sign-section[data-section="2"] input[type="mail"]').value = '';
+    document.querySelector('.sign-section[data-section="2"] input[type="password"]').value = '';
+    alert('Kayıt Başarısız! Kullanıcı adı veya e-mail kullanılmakta.');
   }
 };
 
@@ -138,15 +155,15 @@ document.addEventListener('keyup', function(e) {
           <button data-section="2" class="sign-button text-[18px] text-main py-[6px] px-[24px] border-[1px] rounded-tr-xl rounded-br-xl border-main">Kayıt</button>
         </div>
       </div>
-      <form data-section="1" class="sign-section hidden flex-col justify-center items-center gap-[40px] p-[40px] w-full h-full">
-        <input type="text" class="w-full rounded-[8px] py-[6px] px-[12px] text-text border-[1px] border-main shadow-sm shadow-main-shadow" placeholder="Kullanıcı Adı">
-        <input type="password" class="w-full rounded-[8px] py-[6px] px-[12px] text-text border-[1px] border-main shadow-sm shadow-main-shadow" placeholder="Şifre">
+      <form @submit.prevent="loginUser" data-section="1" class="sign-section hidden flex-col justify-center items-center gap-[40px] p-[40px] w-full h-full">
+        <input type="text" class="w-full rounded-[8px] py-[6px] px-[12px] text-text border-[1px] border-main shadow-sm shadow-main-shadow" placeholder="Kullanıcı Adı" required>
+        <input type="password" class="w-full rounded-[8px] py-[6px] px-[12px] text-text border-[1px] border-main shadow-sm shadow-main-shadow" placeholder="Şifre" required>
         <button id="login-button"class="w-full text-[18px] font-semibold text-white bg-main py-[6px] px-[24px] border-[1px] border-main rounded-[10px] shadow-md shadow-main-shadow">Giriş</button>
       </form>
-      <form data-section="2" class="sign-section hidden flex-col justify-center items-center gap-[20px] py-[20px] px-[40px] w-full h-full">
-        <input type="text" class="w-full rounded-[8px] py-[6px] px-[12px] text-text border-[1px] border-main shadow-sm shadow-main-shadow" placeholder="Kullanıcı Adı">
-        <input type="mail" class="w-full rounded-[8px] py-[6px] px-[12px] text-text border-[1px] border-main shadow-sm shadow-main-shadow" placeholder="E Mail">
-        <input type="password" class="w-full rounded-[8px] py-[6px] px-[12px] text-text border-[1px] border-main shadow-sm shadow-main-shadow" placeholder="Şifre">
+      <form @submit.prevent="registerUser" data-section="2" class="sign-section hidden flex-col justify-center items-center gap-[20px] py-[20px] px-[40px] w-full h-full">
+        <input type="text" class="w-full rounded-[8px] py-[6px] px-[12px] text-text border-[1px] border-main shadow-sm shadow-main-shadow" placeholder="Kullanıcı Adı" required>
+        <input type="mail" class="w-full rounded-[8px] py-[6px] px-[12px] text-text border-[1px] border-main shadow-sm shadow-main-shadow" placeholder="E Mail" required>
+        <input type="password" class="w-full rounded-[8px] py-[6px] px-[12px] text-text border-[1px] border-main shadow-sm shadow-main-shadow" placeholder="Şifre" required>
         <button id="register-button" class="w-full text-[18px] font-semibold text-white bg-main py-[6px] px-[24px] border-[1px] border-main rounded-[10px] shadow-md shadow-main-shadow">Kayıt</button>
       </form>
     </div>

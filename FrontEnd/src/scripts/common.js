@@ -16,4 +16,9 @@ function getImageFromUploads(filePath) {
     return `http://localhost:3000/uploads/${filePath}`;
 }
 
-export { setlocalstorage, getlocalstorage, getImageFromUploads };
+const validateEmail = (email) => {
+    const re = /\S+@\S+\.\S+/;
+    return re.test(email);
+};
+
+export { setlocalstorage, getlocalstorage, getImageFromUploads, validateEmail };

@@ -5,7 +5,8 @@ module.exports = mongoose => {
         {
           username: String,
           password: String,
-          role: Number
+          role: Number,
+          mail: String,
         },
         { timestamps: true }
       )

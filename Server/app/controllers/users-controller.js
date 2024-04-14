@@ -30,8 +30,27 @@ const login = async (req, res) => {
   }
 };
 
+// Register (customer)
+const register = async (req, res) => {
+  const thisUser = await users.findOne({ username: req.body.username }) || await users.findOne({ username: req.body.mail });
+  if (thisUser != null) { return res.status(404).send({ message: "Username or e-mail is used." }); }
+  try {
+    const user = new users({
+      username: req.body.username,
+      password: req.body.password,
+      role: 2,
+      mail: req.body.mail
+    });
+    const data = await user.save();
+    res.send(data);
+  } catch (error) {
+    res.status(500).send({ message: error.message || "Some error occurred while creating the User." });
+  }
+};
+
 
 module.exports = {
   findAll,
-  login
+  login,
+  register
 };
