@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full max-w-[100rem] px-[20px]">
+    <div class="w-full px-[20px]">
         <div class="w-full flex lg:flex-col items-start gap-[20px]">
             <img class="w-[60%] h-[85vh] lg:w-full lg:h-[auto] lg:max-h-[370px] object-cover rounded-[10px] border-[1px]">
             <div class="w-full flex lg:flex-col-reverse items-start gap-[20px]">

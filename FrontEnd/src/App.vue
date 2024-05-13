@@ -106,7 +106,7 @@ document.addEventListener('keyup', function(e) {
 
 <template>
   <!-- header -->
-  <header class="z-[1] fixed w-full h-[74px] flex justify-between items-center gap-[20px] px-[40px] lg:px-[28px] sm:px-[16px] py-[8px] box-border max-w-[100rem] border-b-[1px] border-[#ddd] bg-[#fafafa] dark:bg-dark">
+  <header class="fixed z-20 w-full h-[74px] flex justify-between items-center gap-[20px] px-[40px] lg:px-[28px] sm:px-[16px] py-[8px] box-border max-w-[100rem] border-b-[1px] border-[#ddd] bg-[#fafafa] dark:bg-dark">
       <nav class="w-[75%] flex items-center gap-[12%] lg:gap-[4%] text-[20px] xl:text-[18px]">
         <div class="flex items-center gap-[20px]">
           <button @click="openMenu()" class="hidden sm:block"><font-awesome-icon icon="fa-solid fa-bars" size="lg" /></button>
@@ -130,7 +130,7 @@ document.addEventListener('keyup', function(e) {
       </div>
   </header>
   <!-- body -->
-  <RouterView class="mt-[100px] z-[1]"/>
+  <RouterView class="mt-[100px] max-w-[100rem] z-[1]"/>
   <!-- footer -->
   <footer></footer>
 
@@ -146,7 +146,7 @@ document.addEventListener('keyup', function(e) {
     </ul>
   </div>
   <!-- login/register form -->
-  <div id="sign-form" class="fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.7)] flex justify-center items-center z-0 opacity-0 duration-200">
+  <div id="sign-form" class="fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.7)] flex justify-center items-center z-[-1] opacity-0 duration-200">
     <div class="relative flex flex-col gap-[30px] w-[500px] h-[400px] p-[30px] sm:w-full sm:h-full bg-white text-dark border-[1px] border-black sm:border-none rounded-[18px] sm:rounded-none shadow-md sm:shadow-none">
       <button @click="closeForm()" class="absolute cursor-pointer top-[-12px] right-[-14px] sm:top-[2px] sm:right-[2px] text-[30px] h-[30px] w-[30px] bg-white text-red-600 border-red-600 rounded-[50%] flex justify-center items-center overflow-hidden"><font-awesome-icon :icon="['fas', 'circle-xmark']"/></button>
       <div class="w-full flex justify-center items-center">

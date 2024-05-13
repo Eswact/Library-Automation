@@ -9,6 +9,9 @@ const AjaxScripts = {
   },
   GetCategories: function ({ onSuccess, onError }) {
     fetchData("categories/published", onSuccess, onError);
+  },
+  FindCategory: function ({ data, onSuccess, onError }) {
+    postData(`categories/find/${data}`, null, onSuccess, onError);
   }
 };
 

@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full max-w-[100rem] px-[20px]">
+    <div class="w-full px-[20px]">
         <h1>Contact</h1>
     </div>
 </template>

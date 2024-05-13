@@ -96,7 +96,7 @@
                 </div>
             </swiper-slide>
         </swiper>
-        <div class="w-full max-w-[100rem] flex flex-col gap-[20px]">
+        <div class="w-full flex flex-col gap-[20px]">
             <div class="w-full md:px-[10px] py-[10px] box-border">
                 <swiper
                     :slidesPerView=itemsToShow
@@ -120,9 +120,7 @@
                 <h3 class="text-[26px] pl-[12px]">Son Eklenen Kitaplar</h3>
                 <hr>
                 <div class="w-full flex justify-between items-center gap-[20px] p-[20px]">
-                    <div v-for="book in latestBooks" :key="book.id" class="w-[calc(12.5%-7.5px)] h-[200px] border-[1px] border-second flex justify-center items-center rounded-[6px]">
-                        <span class="text-[20px]">{{ book.name }}</span>
-                    </div>
+                    <!-- latestBooks -->
                 </div>
             </div>
         </div>

@@ -1,3 +1,5 @@
+import AjaxScripts from "./ajaxScripts";
+
 function setlocalstorage(tmpname, tmpvalue) {
     window.localStorage.setItem(tmpname, encodeURIComponent(tmpvalue));
 }
@@ -11,14 +13,27 @@ function getlocalstorage(tmpname) {
     return tmp_dbvalue;
 }
 
-let uploadsUrl = "http://localhost:3000/uploads/";
-function getImageFromUploads(filePath) {
-    return `http://localhost:3000/uploads/${filePath}`;
-}
-
-const validateEmail = (email) => {
+function validateEmail (email) {
     const re = /\S+@\S+\.\S+/;
     return re.test(email);
 };
 
-export { setlocalstorage, getlocalstorage, getImageFromUploads, validateEmail };
+let uploadsUrl = "http://localhost:3000/uploads/";
+function getImageFromUploads(filePath) {
+    return `${uploadsUrl}${filePath}`;
+}
+
+function getCategoryFromId(id) {
+    const data = id;
+    const onSuccess = function (response) {
+        console.log(response.name);
+        return response;
+    };
+    const onError = function (error) {
+        console.log(error);
+        return null;
+    };
+    AjaxScripts.FindCategory({ data, onSuccess, onError});
+}
+
+export { setlocalstorage, getlocalstorage, getImageFromUploads, validateEmail, getCategoryFromId };
