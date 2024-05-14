@@ -1,10 +1,11 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import axios from 'axios';
 import VueJwtDecode from 'vue-jwt-decode';
 import { setlocalstorage, getlocalstorage, validateEmail } from './scripts/common';
 
+const userRole = ref([]);
 onMounted(() => {
   // dark-mode
   const darkModeToggle = document.getElementById('darkmode-toggle');
@@ -33,6 +34,14 @@ onMounted(() => {
     }
   });
 
+  //login-control
+  loginControl();
+
+  //profile-dropdown
+  document.getElementById('profile-but').addEventListener('click', () => {
+    document.getElementById('profile-dropdown').classList.toggle('open');
+  });
+
   // sign-form
   document.querySelectorAll('.sign-button').forEach(button => {
     button.addEventListener('click', () => {
@@ -45,6 +54,16 @@ onMounted(() => {
   document.querySelector('.sign-button').click();
 });
 
+const loginControl = async () => { 
+  if (getlocalstorage('user') != '') {
+    const token = getlocalstorage('user');
+    const decodedToken = VueJwtDecode.decode(token);
+    userRole.value = decodedToken.role;
+    document.getElementById('sign-but').classList.add('close');
+    document.getElementById('profile-but').classList.add('open');
+  }
+};
+
 const loginUser = async () => {
   const username = document.querySelector('.sign-section[data-section="1"] input[type="text"]').value;
   const password = document.querySelector('.sign-section[data-section="1"] input[type="password"]').value;
@@ -53,9 +72,10 @@ const loginUser = async () => {
     const response = await axios.post('http://localhost:3000/api/users/login', {username: username, password: password});
     const token = response.data;
     const decodedToken = VueJwtDecode.decode(token);
-    console.log(decodedToken);
+    setlocalstorage('user', token);
     alert('Giriş Başarılı! Hoşgeldin ' + decodedToken.username);
     closeForm();
+    loginControl();
   } catch (error) {
     console.error('Error:', error.message);
     document.querySelector('.sign-section[data-section="1"] input[type="text"]').value = '';
@@ -84,6 +104,14 @@ const registerUser = async () => {
   }
 };
 
+const logout = () => {
+  setlocalstorage('user', '');
+  userRole.value = null;
+  document.getElementById('sign-but').classList.remove('close');
+  document.getElementById('profile-but').classList.remove('open');
+  document.getElementById('profile-dropdown').classList.remove('open');
+};
+
 const openMenu = () => {
   document.getElementById('hamburger-menu').classList.add('open');
 };
@@ -92,6 +120,10 @@ const closeMenu = () => {
 };
 const openForm = () => {
   document.getElementById('sign-form').classList.add('open');
+  document.querySelectorAll('#sign-form input').forEach(input => {
+    input.value = '';
+  });
+  document.querySelector('.sign-button:first-child').click();
 };
 const closeForm = () => {
   document.getElementById('sign-form').classList.remove('open');
@@ -126,7 +158,17 @@ document.addEventListener('keyup', function(e) {
             <span class="dark:bg-white">DarkMode</span>
           </label>
         </div>
-        <button @click="openForm()" class="border-[1px] px-[20px] py-[5px] rounded-[12px] text-[16px] font-semibold shadow-md dark:bg-white dark:text-dark dark:shadow-[rgba(255,255,255,0.25)]">Giriş</button>
+        <button id="sign-but" @click="openForm()" class="border-[1px] px-[20px] py-[5px] rounded-[12px] text-[16px] font-semibold shadow-md dark:bg-white dark:text-dark dark:shadow-[rgba(255,255,255,0.25)]">Giriş</button>
+        <button id="profile-but" class="px-[10px] py-[8px] text-dark-blue dark:text-white"><font-awesome-icon icon="fa-solid fa-user" size="2xl"/></button>
+        <div id="profile-dropdown" class="absolute w-[180px] mx-[4px] top-[70px] right-0 flex flex-col gap-0 rounded-md shadow-md shadow-dark-blue dark:shadow-second">
+          <font-awesome-icon class="text-dark-blue dark:text-second absolute right-[52px] top-[-15px]" :icon="['fas', 'caret-up']" size="lg" />
+          <div class="bg-white w-full h-full rounded-md border-[2px] border-dark-blue dark:border-second">
+            <ul class="w-full h-full flex flex-col items-center justify-center">
+              <li v-if="userRole == 0" class="w-full cursor-pointer p-[4px] h-[40px] flex items-center justify-center text-[18px] font-semibold text-dark-blue dark:text-second border-b-[1px] border-dark-blue dark:border-second hover:bg-dark-blue hover:text-white dark:hover:bg-second dark:hover:text-white">Yönetici Paneli</li>
+              <li @click="logout()" class="w-full cursor-pointer p-[4px] h-[40px] flex items-center justify-center text-[18px] font-semibold text-dark-blue dark:text-second hover:bg-dark-blue hover:text-white dark:hover:bg-second dark:hover:text-white">Çıkış</li>
+            </ul>
+          </div>
+        </div>
       </div>
   </header>
   <!-- body -->
@@ -190,5 +232,11 @@ document.addEventListener('keyup', function(e) {
   .sign-button.selected {
     background-color: #2894B5;
     color: white;
+  }
+  #profile-but, #sign-but.close, #profile-dropdown {
+    display: none;
+  }
+  #profile-but.open, #profile-dropdown.open {
+    display: flex;
   }
 </style>

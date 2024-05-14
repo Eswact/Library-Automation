@@ -13,6 +13,7 @@ export default {
         'second-shadow': '#EEC6815e',
         'green': '#4FB477',
         'green-shadow': '#4FB4775e',
+        'dark-blue': '#24244F',
       },
     },
     screens: {
