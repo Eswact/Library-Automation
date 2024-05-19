@@ -12,7 +12,13 @@ const AjaxScripts = {
   },
   FindCategory: function ({ data, onSuccess, onError }) {
     postData(`categories/find/${data}`, null, onSuccess, onError);
-  }
+  },
+  GetWriters: function ({ onSuccess, onError }) {
+    fetchData("writers/published", onSuccess, onError);
+  },
+  GetPublishers: function ({ onSuccess, onError }) {
+    fetchData("publishers/published", onSuccess, onError);
+  },
 };
 
 export default AjaxScripts;
