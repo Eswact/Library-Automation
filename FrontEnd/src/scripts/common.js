@@ -36,4 +36,8 @@ function getCategoryFromId(id) {
     AjaxScripts.FindCategory({ data, onSuccess, onError});
 }
 
-export { setlocalstorage, getlocalstorage, getImageFromUploads, validateEmail, getCategoryFromId };
+function getDetailsPage (router, bookId) {
+    router.push({ path: `/detail/${bookId}` });
+}
+
+export { setlocalstorage, getlocalstorage, getImageFromUploads, validateEmail, getCategoryFromId, getDetailsPage };

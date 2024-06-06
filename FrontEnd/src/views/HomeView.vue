@@ -83,7 +83,7 @@
                 disableOnInteraction: false,
             }"
             :modules="modules"
-            class="w-full h-[380px] sm:h-[186px]"
+            class="w-full h-[340px] sm:h-[186px]"
             ref="swiperRef"
         >
             <swiper-slide v-for="(item, index) in bannerContent" :key="index" class="w-full h-full">
@@ -109,7 +109,7 @@
                     class="w-full h-[100px] sm:h-[80px] px-[50px]"
                 >
                     <swiper-slide v-for="(item, index) in categoryContent" :key="index">
-                        <div class="flex justify-center items-center overflow-hidden rounded-[16px] h-full w-full">
+                        <div class="flex justify-center items-center overflow-hidden rounded-[16px] h-full w-full border-[1px] border-second-shadow shadow-sm shadow-second-shadow">
                             <img :src="getImageFromUploads(`categories/${item.img}`)" alt="category" class="w-full h-full opacity-[85%]">
                             <span class="absolute text-[32px] text-white font-bold mb-[8px] text-center">{{ item.name }}</span>
                         </div>
@@ -119,8 +119,27 @@
             <div class="w-full">
                 <h3 class="text-[26px] pl-[12px]">Son Eklenen Kitaplar</h3>
                 <hr>
-                <div class="w-full flex justify-between items-center gap-[20px] p-[20px]">
-                    <!-- latestBooks -->
+                <div class="w-full flex items-center gap-[20px] p-[20px]">
+                    <div v-for="book in latestBooks" :key="book._id" >
+                        <div v-if="book.isBorrowed" class="relative dark:bg-[rgba(155,155,155,0.55)] w-[220px] h-[270px] p-[16px] border-[2px] border-[rgba(155,155,155,0.75)] rounded-[12px] shadow-md shadow-[rgba(155,155,155,0.55)] flex flex-col justify-center items-center gap-[8px]">
+                            <div class="absolute top-[4px] w-full px-[12px] flex justify-between items-center text-[14px] font-semibold">
+                                <span v-if="(categoryContent.find(x => x.catId == book.category) != null)">{{ categoryContent.find(x => x.catId == book.category).name }}</span>
+                                <span v-else>Diğer</span>
+                            </div>
+                            <img :src="getImageFromUploads(`books/${book.images[0]}`)" :alt=book.name class="h-[150px] max-w-full rounded-[5px] grayscale">
+                            <span :title=book.name class="text-[18px] font-semibold text-center truncate max-w-full">{{ book.name }}</span>
+                            <span class="absolute bottom-[4px] text-[16px] font-semibold text-red-800">Mevcut Değil</span>
+                        </div>
+                        <div v-else class="relative dark:bg-main-shadow cursor-pointer w-[220px] h-[270px] p-[16px] border-[2px] border-main rounded-[12px] shadow-md shadow-main-shadow flex flex-col justify-center items-center gap-[8px]" @click="getDetailsPage(router, book._id)">
+                            <div class="absolute top-[4px] w-full px-[12px] flex justify-between items-center text-[14px] font-semibold">
+                                <span v-if="(categoryContent.find(x => x.catId == book.category) != null)">{{ categoryContent.find(x => x.catId == book.category).name }}</span>
+                                <span v-else>Diğer</span>
+                            </div>
+                            <img :src="getImageFromUploads(`books/${book.images[0]}`)" :alt=book.name class="h-[150px] max-w-full rounded-[5px]">
+                            <span :title=book.name class="text-[18px] font-semibold text-center truncate max-w-full">{{ book.name }}</span>
+                            <span class="absolute bottom-[4px] text-[14px] font-semibold text-second">Detaylar için tıkla</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

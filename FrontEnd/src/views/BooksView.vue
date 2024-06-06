@@ -1,7 +1,9 @@
 <script setup>
     import { ref, onMounted, watch, onBeforeUnmount} from 'vue';
     import AjaxScripts from '../scripts/ajaxScripts.js';
-    import { getImageFromUploads, getCategoryFromId } from '../scripts/common.js';
+    import { getImageFromUploads, getDetailsPage } from '../scripts/common.js';
+    import { useRouter } from 'vue-router';
+    const router = useRouter();
 
     const books = ref([]);
     const writers = ref([]);
@@ -130,7 +132,7 @@
             </div>
         </div>
         <div class="w-full pl-[250px] pr-[10px] md:pl-[10px] flex items-center gap-[20px] flex-wrap">
-            <div v-for="book in books" :key="book.id" >
+            <div v-for="book in books" :key="book._id" >
                 <div v-if="book.isBorrowed" class="relative dark:bg-[rgba(155,155,155,0.55)] w-[220px] h-[270px] p-[16px] border-[2px] border-[rgba(155,155,155,0.75)] rounded-[12px] shadow-md shadow-[rgba(155,155,155,0.55)] flex flex-col justify-center items-center gap-[8px]">
                     <div class="absolute top-[4px] w-full px-[12px] flex justify-between items-center text-[14px] font-semibold">
                         <span v-if="(categories.find(x => x.catId == book.category) != null)">{{ categories.find(x => x.catId == book.category).name }}</span>
@@ -140,7 +142,7 @@
                     <span :title=book.name class="text-[18px] font-semibold text-center truncate max-w-full">{{ book.name }}</span>
                     <span class="absolute bottom-[4px] text-[16px] font-semibold text-red-800">Mevcut Değil</span>
                 </div>
-                <div v-else class="relative dark:bg-main-shadow cursor-pointer w-[220px] h-[270px] p-[16px] border-[2px] border-main rounded-[12px] shadow-md shadow-main-shadow flex flex-col justify-center items-center gap-[8px]">
+                <div v-else class="relative dark:bg-main-shadow cursor-pointer w-[220px] h-[270px] p-[16px] border-[2px] border-main rounded-[12px] shadow-md shadow-main-shadow flex flex-col justify-center items-center gap-[8px]" @click="getDetailsPage(router, book._id)">
                     <div class="absolute top-[4px] w-full px-[12px] flex justify-between items-center text-[14px] font-semibold">
                         <span v-if="(categories.find(x => x.catId == book.category) != null)">{{ categories.find(x => x.catId == book.category).name }}</span>
                         <span v-else>Diğer</span>

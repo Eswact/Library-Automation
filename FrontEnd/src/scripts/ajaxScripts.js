@@ -4,6 +4,9 @@ const AjaxScripts = {
   GetBooks: function ({ onSuccess, onError }) {
     fetchData("books/published", onSuccess, onError);
   },
+  FindBook: function ({ data, onSuccess, onError }) {
+    postData(`books/find/${data}`, null, onSuccess, onError);
+  },
   GetBanners: function ({ onSuccess, onError }) {
     fetchData("home/banners/published", onSuccess, onError);
   },
@@ -18,6 +21,9 @@ const AjaxScripts = {
   },
   GetPublishers: function ({ onSuccess, onError }) {
     fetchData("publishers/published", onSuccess, onError);
+  },
+  GetCompanyInfos: function ({ onSuccess, onError }) {
+    fetchData("company/published", onSuccess, onError);
   },
 };
 

@@ -6,6 +6,7 @@ const userRoutes = require("./user-routes");
 const homeRoutes = require("./home-routes");
 const writerRoutes = require("./writer-routes");
 const publisherRoutes = require("./publisher-routes");
+const companyRoutes = require("./company-routes");
 
 chooseMethod = (method, path, func) => { 
     switch (method) {
@@ -43,6 +44,9 @@ writerRoutes.forEach(({ method, path, func }) => {
 });
 publisherRoutes.forEach(({ method, path, func }) => {
     chooseMethod(method, `/publishers/${path}`, func);
+});
+companyRoutes.forEach(({ method, path, func }) => {
+    chooseMethod(method, `/company/${path}`, func);
 });
 
 module.exports = router;
