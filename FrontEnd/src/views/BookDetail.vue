@@ -6,14 +6,49 @@ import { getImageFromUploads, getDetailsPage } from "../scripts/common.js";
 const router = useRouter();
 const bookDetail = ref(null);
 const books = ref([]);
+const categoryId = ref(null);
 const category = ref(null);
+const writer = ref(null);
+const publisher = ref(null);
+
+function getWriter() {
+  let onSuccess = (res) => {
+    writer.value = res.find((w) => w.writerId == bookDetail.value.writer);
+  };
+  let onError = (err) => {
+      console.log(err);
+  };
+  AjaxScripts.GetWriters({onSuccess, onError});
+}
+function getPublisher() {
+  let onSuccess = (res) => {
+    publisher.value = res.find((p) => p.publisherId == bookDetail.value.publisher);
+  };
+  let onError = (err) => {
+      console.log(err);
+  };
+  AjaxScripts.GetPublishers({onSuccess, onError});
+}
+function getCategory() {
+  let onSuccess = (res) => {
+      category.value = res.find((cat) => cat.catId == bookDetail.value.category);
+  };
+  let onError = (err) => {
+      console.log(err);
+  };
+  AjaxScripts.GetCategories({onSuccess, onError});
+}
 
 function getBookDetail(bookId) {
   let data = bookId;
   let onSuccess = (res) => {
     console.log(res);
     bookDetail.value = res;
-    category.value = res.category;
+    categoryId.value = res.category;
+    getSimilarBooks();
+    getCategory();
+    getWriter();
+    getPublisher();
   };
   let onError = (err) => {
     console.log(err);
@@ -25,9 +60,10 @@ function getSimilarBooks() {
   let onSuccess = (res) => {
     let similarBooks = res.filter(
       (book) =>
-        book.category == category.value &&
-        book.id != router.currentRoute.value.params.bookId
+        book.category == categoryId.value &&
+        book._id != router.currentRoute.value.params.bookId
     );
+    console.log(similarBooks)
     books.value = similarBooks.slice(-4).reverse();
   };
   let onError = (err) => {
@@ -39,7 +75,6 @@ function getSimilarBooks() {
 onMounted(() => {
   if (router.currentRoute.value.params.bookId) {
     getBookDetail(router.currentRoute.value.params.bookId);
-    getSimilarBooks();
   }
 });
 </script>
@@ -69,7 +104,7 @@ onMounted(() => {
           <h1 class="text-[40px] text-main dark:text-white">
             {{ bookDetail.name }}
           </h1>
-          <span class="text-second text-[18px]">Yazar Adı</span>
+          <span class="text-second text-[18px]">{{ writer.name }}</span>
         </div>
         <!-- description -->
         <p>{{ bookDetail.subject }}</p>
@@ -77,54 +112,24 @@ onMounted(() => {
         <div class="flex items-center gap-[10%]">
           <div class="flex flex-col gap-[15px] items-start">
             <div class="flex items-center gap-[10px] text-main dark:text-white">
-              <font-awesome-icon
-                class="w-[50px]"
-                icon="fa-solid fa-users"
-                size="2xl"
-              />
               <span class="font-semibold">Kategori</span>
             </div>
             <div class="flex items-center gap-[10px] text-main dark:text-white">
-              <font-awesome-icon
-                class="w-[50px]"
-                icon="fa-solid fa-suitcase-rolling"
-                size="2xl"
-              />
               <span class="font-semibold">Yayınevi</span>
             </div>
             <div class="flex items-center gap-[10px] text-main dark:text-white">
-              <font-awesome-icon
-                class="w-[50px]"
-                icon="fa-solid fa-gas-pump"
-                size="2xl"
-              />
               <span>Yaş</span>
             </div>
           </div>
           <div class="flex flex-col gap-[15px] items-start">
             <div class="flex items-center gap-[10px] text-second">
-              <font-awesome-icon
-                class="w-[50px]"
-                icon="fa-solid fa-gauge-simple-high"
-                size="2xl"
-              />
-              <span class="font-semibold">test</span>
+              <span class="font-semibold">{{ category.name }}</span>
             </div>
             <div class="flex items-center gap-[10px] text-second">
-              <font-awesome-icon
-                class="w-[50px]"
-                icon="fa-solid fa-calendar-days"
-                size="2xl"
-              />
-              <span class="font-semibold">test</span>
+              <span class="font-semibold">{{ publisher.name }}</span>
             </div>
             <div class="flex items-center gap-[10px] text-second">
-              <font-awesome-icon
-                class="w-[50px]"
-                icon="fa-solid fa-credit-bookd"
-                size="2xl"
-              />
-              <span class="font-semibold">test</span>
+              <span class="font-semibold">-</span>
             </div>
           </div>
         </div>
