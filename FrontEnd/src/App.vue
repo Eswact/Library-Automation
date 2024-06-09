@@ -1,12 +1,31 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView, useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import axios from 'axios';
 import VueJwtDecode from 'vue-jwt-decode';
 import { setlocalstorage, getlocalstorage, validateEmail } from './scripts/common';
 
 const userRole = ref([]);
+const router = useRouter();
+const isLogin = ref(false);
+const isAdminPage = ref(false);
+const updateAdminPageStatus = () => {
+  isAdminPage.value = router.currentRoute.value.path.includes('/admin');
+};
+
 onMounted(() => {
+  // error-handler
+  if (getlocalstorage('errMsg') != '') {
+    alert(getlocalstorage('errMsg'));
+    setlocalstorage('errMsg', '');
+  }
+
+  // admin-page
+  updateAdminPageStatus();
+  router.afterEach((to) => {
+    updateAdminPageStatus(to);
+  });
+
   // dark-mode
   const darkModeToggle = document.getElementById('darkmode-toggle');
   if (getlocalstorage('dark-mode') != '') {
@@ -34,12 +53,17 @@ onMounted(() => {
     }
   });
 
-  //login-control
+  // login-control
   loginControl();
 
-  //profile-dropdown
-  document.getElementById('profile-but').addEventListener('click', () => {
-    document.getElementById('profile-dropdown').classList.toggle('open');
+  // profile-dropdown
+  document.querySelector('body').addEventListener('click', (e) => {
+    if (!e.target.closest('#profile-but')) {
+      document.getElementById('profile-dropdown').classList.remove('open');
+    }
+    else {
+      document.getElementById('profile-dropdown').classList.toggle('open');
+    }
   });
 
   // sign-form
@@ -59,8 +83,7 @@ const loginControl = async () => {
     const token = getlocalstorage('user');
     const decodedToken = VueJwtDecode.decode(token);
     userRole.value = decodedToken.role;
-    document.getElementById('sign-but').classList.add('close');
-    document.getElementById('profile-but').classList.add('open');
+    isLogin.value = true;
   }
 };
 
@@ -107,9 +130,7 @@ const registerUser = async () => {
 const logout = () => {
   setlocalstorage('user', '');
   userRole.value = null;
-  document.getElementById('sign-but').classList.remove('close');
-  document.getElementById('profile-but').classList.remove('open');
-  document.getElementById('profile-dropdown').classList.remove('open');
+  isLogin.value = false;
 };
 
 const openMenu = () => {
@@ -142,13 +163,19 @@ document.addEventListener('keyup', function(e) {
       <nav class="w-[75%] flex items-center gap-[12%] lg:gap-[4%] text-[20px] xl:text-[18px]">
         <div class="flex items-center gap-[20px]">
           <button @click="openMenu()" class="hidden sm:block"><font-awesome-icon icon="fa-solid fa-bars" size="lg" /></button>
-          <RouterLink class="flex items-center justify-center gap-[10px] text-[28px] xl:text-[24px] text-text dark:text-white sm:pb-[5px]" to="/"><!-- <img class="h-[46px]" src="./images/logo.png" alt="logo"> --> QrHane</RouterLink>
+          <RouterLink @click.native="updateAdminPageStatus('/')" class="flex items-center justify-center gap-[10px] text-[28px] xl:text-[24px] text-text dark:text-white sm:pb-[5px]" to="/"><!-- <img class="h-[46px]" src="./images/logo.png" alt="logo"> --> QrHane</RouterLink>
         </div>
-        <ul class="navbar flex gap-[36px] lg:gap-[12px] text-text dark:text-white pt-[6px] md:text-[28px] md:px-[40px] sm:hidden">
-          <li :class="{ 'active': $route.path === '/' }"><RouterLink class="flex flex-col w-[100%] justify-center items-center" to="/"><div class="px-[10px] flex items-center justify-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-house" class="pb-[2px]"/><span class="md:hidden">Anasayfa</span></div><hr class="w-0 ease-in-out duration-300 border-text dark:border-white md:hidden"></RouterLink></li>
-          <li :class="{ 'active': $route.path === '/books' || $route.path.includes('/detail/') }"><RouterLink class="flex flex-col w-[100%] justify-center items-center" to="/books"><div class="px-[10px] flex items-center justify-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-book"/><span class="md:hidden">Kitaplar</span></div><hr class="w-0 ease-in-out duration-300 border-text dark:border-white md:hidden"></RouterLink></li>
-          <li :class="{ 'active': $route.path === '/about' }"><RouterLink class="flex flex-col w-[100%] justify-center items-center" to="/about"><div class="px-[10px] flex items-center justify-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-circle-info"/><span class="md:hidden">Hakkımızda</span></div><hr class="w-0 ease-in-out duration-300 border-text dark:border-white md:hidden"></RouterLink></li>
-          <li :class="{ 'active': $route.path === '/contact' }"><RouterLink class="flex flex-col w-[100%] justify-center items-center" to="/contact"><div class="px-[10px] flex items-center justify-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-headset"/><span class="md:hidden">İletişim</span></div><hr class="w-0 ease-in-out duration-300 border-text dark:border-white md:hidden"></RouterLink></li>
+        <ul v-if="isAdminPage"  class="navbar flex gap-[36px] lg:gap-[12px] text-text dark:text-white pt-[6px] md:text-[28px] md:px-[40px] sm:hidden">
+          <li :class="{ 'active': $route.path === '/admin' }"><RouterLink class="flex flex-col w-[100%] justify-center items-center" to="/admin"><div class="px-[10px] flex items-center justify-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-house" class="pb-[2px]"/><span class="md:hidden">Panel</span></div><hr class="w-0 ease-in-out duration-300 border-text dark:border-white md:hidden"></RouterLink></li>
+          <li :class="{ 'active': $route.path === '/admin/books' }"><RouterLink class="flex flex-col w-[100%] justify-center items-center" to="/admin/books"><div class="px-[10px] flex items-center justify-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-book"/><span class="md:hidden">Kitaplar</span></div><hr class="w-0 ease-in-out duration-300 border-text dark:border-white md:hidden"></RouterLink></li>
+          <li :class="{ 'active': $route.path === '/admin/company' }"><RouterLink class="flex flex-col w-[100%] justify-center items-center" to="/admin/company"><div class="px-[10px] flex items-center justify-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-circle-info"/><span class="md:hidden">Kütüphane</span></div><hr class="w-0 ease-in-out duration-300 border-text dark:border-white md:hidden"></RouterLink></li>
+          <li :class="{ 'active': $route.path === '/admin/users' }"><RouterLink class="flex flex-col w-[100%] justify-center items-center" to="/admin/users"><div class="px-[10px] flex items-center justify-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-user-pen" /><span class="md:hidden">Kullanıcılar</span></div><hr class="w-0 ease-in-out duration-300 border-text dark:border-white md:hidden"></RouterLink></li>
+        </ul>
+        <ul v-else  class="navbar flex gap-[36px] lg:gap-[12px] text-text dark:text-white pt-[6px] md:text-[28px] md:px-[40px] sm:hidden">
+          <li @click.native="updateAdminPageStatus('/')" :class="{ 'active': $route.path === '/' }"><RouterLink class="flex flex-col w-[100%] justify-center items-center" to="/"><div class="px-[10px] flex items-center justify-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-house" class="pb-[2px]"/><span class="md:hidden">Anasayfa</span></div><hr class="w-0 ease-in-out duration-300 border-text dark:border-white md:hidden"></RouterLink></li>
+          <li @click.native="updateAdminPageStatus('/books')" :class="{ 'active': $route.path === '/books' || $route.path.includes('/detail/') }"><RouterLink class="flex flex-col w-[100%] justify-center items-center" to="/books"><div class="px-[10px] flex items-center justify-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-book"/><span class="md:hidden">Kitaplar</span></div><hr class="w-0 ease-in-out duration-300 border-text dark:border-white md:hidden"></RouterLink></li>
+          <li @click.native="updateAdminPageStatus('/about')" :class="{ 'active': $route.path === '/about' }"><RouterLink class="flex flex-col w-[100%] justify-center items-center" to="/about"><div class="px-[10px] flex items-center justify-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-circle-info"/><span class="md:hidden">Hakkımızda</span></div><hr class="w-0 ease-in-out duration-300 border-text dark:border-white md:hidden"></RouterLink></li>
+          <li @click.native="updateAdminPageStatus('/contact')" :class="{ 'active': $route.path === '/contact' }"><RouterLink class="flex flex-col w-[100%] justify-center items-center" to="/contact"><div class="px-[10px] flex items-center justify-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-headset"/><span class="md:hidden">İletişim</span></div><hr class="w-0 ease-in-out duration-300 border-text dark:border-white md:hidden"></RouterLink></li>
         </ul>
       </nav>
       <div class="w-[25%] lg:w-[auto] flex justify-end items-center gap-[32px] lg:gap-[24px] sm:gap-[16px]">
@@ -158,13 +185,14 @@ document.addEventListener('keyup', function(e) {
             <span class="dark:bg-white">DarkMode</span>
           </label>
         </div>
-        <button id="sign-but" @click="openForm()" class="border-[1px] px-[20px] py-[5px] rounded-[12px] text-[16px] font-semibold shadow-md dark:bg-white dark:text-dark dark:shadow-[rgba(255,255,255,0.25)]">Giriş</button>
-        <button id="profile-but" class="px-[10px] py-[8px] text-dark-blue dark:text-white"><font-awesome-icon icon="fa-solid fa-user" size="2xl"/></button>
+        <button v-if="!isLogin" id="sign-but" @click="openForm()" class="border-[1px] px-[20px] py-[5px] rounded-[12px] text-[16px] font-semibold shadow-md dark:bg-white dark:text-dark dark:shadow-[rgba(255,255,255,0.25)]">Giriş</button>
+        <RouterLink to="/" v-else-if="isAdminPage" id="back2Home-but" class="px-[10px] py-[8px] text-dark-blue dark:text-white"><font-awesome-icon icon="fa-solid fa-right-from-bracket" size="2xl"/></RouterLink>
+        <button v-else id="profile-but" class="px-[10px] py-[8px] text-dark-blue dark:text-white"><font-awesome-icon icon="fa-solid fa-user" size="2xl"/></button>
         <div id="profile-dropdown" class="absolute w-[180px] mx-[4px] top-[70px] right-0 flex flex-col gap-0 rounded-md shadow-md shadow-dark-blue dark:shadow-second">
           <font-awesome-icon class="text-dark-blue dark:text-second absolute right-[52px] top-[-15px]" :icon="['fas', 'caret-up']" size="lg" />
           <div class="bg-white w-full h-full rounded-md border-[2px] border-dark-blue dark:border-second">
             <ul class="w-full h-full flex flex-col items-center justify-center">
-              <li v-if="userRole == 0" class="w-full cursor-pointer p-[4px] h-[40px] flex items-center justify-center text-[18px] font-semibold text-dark-blue dark:text-second border-b-[1px] border-dark-blue dark:border-second hover:bg-dark-blue hover:text-white dark:hover:bg-second dark:hover:text-white">Yönetici Paneli</li>
+              <li v-if="userRole == 0" class="w-full cursor-pointer h-[40px] border-b-[1px] border-dark-blue dark:border-second hover:bg-dark-blue dark:hover:bg-second" ><RouterLink class="h-full w-full p-[4px] flex items-center justify-center text-[18px] font-semibold text-dark-blue dark:text-second hover:text-white dark:hover:text-white" to="/admin">Yönetici Paneli</RouterLink></li>
               <li @click="logout()" class="w-full cursor-pointer p-[4px] h-[40px] flex items-center justify-center text-[18px] font-semibold text-dark-blue dark:text-second hover:bg-dark-blue hover:text-white dark:hover:bg-second dark:hover:text-white">Çıkış</li>
             </ul>
           </div>
@@ -180,7 +208,13 @@ document.addEventListener('keyup', function(e) {
   <!-- hamburger menu -->
   <div id="hamburger-menu" class="fixed top-0 left-0 w-0 h-full bg-white text-dark dark:bg-dark dark:text-white overflow-hidden z-0 ease-in-out duration-300">
     <div class="w-full pt-[16px] px-[16px] text-[30px] flex justify-end items-start"><button @click="closeMenu()" class="text-red-600 border-red-600 w-[30px] h-[30px] flex items-center justify-center bg-white rounded-[50%]"><font-awesome-icon :icon="['fas', 'circle-xmark']"/></button></div>
-    <ul class="w-full flex flex-col gap-[20px] items-start justify-start text-[22px] p-[20px]">
+    <ul v-if="isAdminPage"  class="w-full flex flex-col gap-[20px] items-start justify-start text-[22px] p-[20px]">
+      <li :class="{ 'active': $route.path === '/admin' }" @click="closeMenu()"><RouterLink class="flex w-[100%]" to="/admin"><div class="px-[10px] flex items-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-house" class="pb-[2px]"/><span>Durum</span></div></RouterLink></li>
+      <li :class="{ 'active': $route.path === '/admin/books' }" @click="closeMenu()"><RouterLink class="flex w-[100%]" to="/admin/books"><div class="px-[10px] flex items-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-book"/><span>Kitaplar</span></div></RouterLink></li>
+      <li :class="{ 'active': $route.path === '/admin/company' }" @click="closeMenu()"><RouterLink class="flex w-[100%]" to="/admin/company"><div class="px-[10px] flex items-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-circle-info"/><span>Kütüphane</span></div></RouterLink></li>
+      <li :class="{ 'active': $route.path === '/admin/users' }" @click="closeMenu()"><RouterLink class="flex w-[100%]" to="/admin/users"><div class="px-[10px] flex items-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-user-pen"/><span>Kullanıcılar</span></div></RouterLink></li>
+    </ul>
+    <ul v-else  class="w-full flex flex-col gap-[20px] items-start justify-start text-[22px] p-[20px]">
       <li :class="{ 'active': $route.path === '/' }" @click="closeMenu()"><RouterLink class="flex w-[100%]" to="/"><div class="px-[10px] flex items-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-house" class="pb-[2px]"/><span>Anasayfa</span></div></RouterLink></li>
       <li :class="{ 'active': $route.path === '/books' }" @click="closeMenu()"><RouterLink class="flex w-[100%]" to="/books"><div class="px-[10px] flex items-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-book"/><span>Kitaplar</span></div></RouterLink></li>
       <li :class="{ 'active': $route.path === '/about' }" @click="closeMenu()"><RouterLink class="flex w-[100%]" to="/about"><div class="px-[10px] flex items-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-circle-info"/><span>Hakkımızda</span></div></RouterLink></li>
@@ -233,10 +267,10 @@ document.addEventListener('keyup', function(e) {
     background-color: #2894B5;
     color: white;
   }
-  #profile-but, #sign-but.close, #profile-dropdown {
+  #profile-dropdown {
     display: none;
   }
-  #profile-but.open, #profile-dropdown.open {
+  #profile-dropdown.open {
     display: flex;
   }
 </style>

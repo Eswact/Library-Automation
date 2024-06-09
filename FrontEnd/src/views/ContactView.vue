@@ -30,9 +30,9 @@
             <h2 class="w-full text-center text-[24px] border-b-[1px] pb-[4px]">İletişime Geçin</h2>
             <div class="px-[20px] flex flex-col justify-center gap-[10px] text-[18px] w-full md:w-full md:px-[2px] md:py-[2px]">
                 <div class="w-full py-[10px] px-[12px] flex flex-col gap-[18px] md:px-0">
-                <div class="w-full flex items-center justify-start gap-[8px] "><span class="text-second min-w-[60px] text-center"><font-awesome-icon icon="fa-solid fa-phone" size="xl"/></span><span class="text-main dark:text-white"> {{contact.tel}}</span></div>
-                <div class="w-full flex items-center justify-start gap-[8px] "><span class="text-second min-w-[60px] text-center"><font-awesome-icon icon="fa-solid fa-envelope" size="xl"/></span><span class="text-main dark:text-white"> {{contact.mail}}</span></div>
-                <div class="w-full flex items-center justify-start gap-[8px] "><span class="text-second min-w-[60px] text-center"><font-awesome-icon icon="fa-solid fa-location-dot" size="xl"/></span><span class="text-main dark:text-white"> {{contact.address}}</span></div>
+                <div class="w-full flex items-center justify-start gap-[8px] "><span class="text-second min-w-[60px] text-center"><font-awesome-icon icon="fa-solid fa-phone" size="xl"/></span><span class=" dark:text-white"> {{contact.tel}}</span></div>
+                <div class="w-full flex items-center justify-start gap-[8px] "><span class="text-second min-w-[60px] text-center"><font-awesome-icon icon="fa-solid fa-envelope" size="xl"/></span><span class=" dark:text-white"> {{contact.mail}}</span></div>
+                <div class="w-full flex items-center justify-start gap-[8px] "><span class="text-second min-w-[60px] text-center"><font-awesome-icon icon="fa-solid fa-location-dot" size="xl"/></span><span class=" dark:text-white"> {{contact.address}}</span></div>
                 </div>
             </div>
             <div class="w-full px-[10px]">
