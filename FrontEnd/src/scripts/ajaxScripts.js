@@ -25,6 +25,9 @@ const AjaxScripts = {
   GetCompanyInfos: function ({ onSuccess, onError }) {
     fetchData("company/published", onSuccess, onError);
   },
+  SendMail: function ({ data, onSuccess, onError }) {
+    postData(`company/sendMail`, data, onSuccess, onError);
+  },
 };
 
 export default AjaxScripts;

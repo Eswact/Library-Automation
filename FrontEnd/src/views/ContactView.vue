@@ -2,6 +2,7 @@
     import { ref, onMounted, watch, onBeforeUnmount} from 'vue';
     import AjaxScripts from '../scripts/ajaxScripts.js';
     import { getImageFromUploads } from '../scripts/common.js';
+    import { toast } from 'vue3-toastify';
 
     const contact = ref({});
 
@@ -14,6 +15,27 @@
         };
         AjaxScripts.GetCompanyInfos({onSuccess, onError});
     }
+
+    const handleSubmit = () => {
+        const data = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            message: document.getElementById('message').value,
+        };
+        const onSuccess = (res) => {
+            console.log(res);
+            document.getElementById('name').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('message').value = '';
+            toast("Mesajınız başarıyla gönderildi.", { autoClose: 3000, type: "success", position: "bottom-right" });
+        };
+        const onError = (err) => {
+            console.log(err);
+            toast("Mesajınız gönderilirken bir hata oluştu.", { autoClose: 3000, type: "error", position: "bottom-right" });
+        };
+        AjaxScripts.SendMail({data, onSuccess, onError});
+    }
+
     onMounted(() => {
         getCompanyInfos();
     }); 
@@ -37,18 +59,18 @@
             </div>
             <div class="w-full px-[10px]">
                 <div class="w-full flex flex-col items-start gap-[20px] md:flex-col-reverse">
-                    <form  class="flex flex-col gap-[16px] w-full md:w-full px-[28px] py-[20px] border-[1px] border-main rounded-[10px] bg-main-shadow shadow-lg shadow-main-shadow">
+                    <form @submit.prevent="handleSubmit"  class="flex flex-col gap-[16px] w-full md:w-full px-[28px] py-[20px] border-[1px] border-main rounded-[10px] bg-main-shadow shadow-lg shadow-main-shadow">
                         <div class="flex flex-col gap-[10px] w-full">
                             <label class="text-[12px] font-semibold text-main dark:text-white" for="name">Adınız Soyadınız</label>
-                            <input class="w-full p-[10px] border border-main dark:border-white rounded-md" type="text" id="name" name="name" placeholder="Adınız Soyadınız" required>
+                            <input class="w-full p-[10px] border border-main dark:border-white rounded-md text-black" type="text" id="name" name="name" placeholder="Adınız Soyadınız" required>
                         </div>
                         <div class="flex flex-col gap-[10px] w-full">
                             <label class="text-[12px] font-semibold text-main dark:text-white" for="email">E-Posta Adresiniz</label>
-                            <input class="w-full p-[10px] border border-main dark:border-white rounded-md" type="email" id="email" name="email" placeholder="E-Posta Adresiniz" required>
+                            <input class="w-full p-[10px] border border-main dark:border-white rounded-md text-black" type="email" id="email" name="email" placeholder="E-Posta Adresiniz" required>
                         </div>
                         <div class="flex flex-col gap-[10px] w-full">
                             <label class="text-[12px] font-semibold text-main dark:text-white" for="message">Mesajınız</label>
-                            <textarea class="w-full p-[10px] min-h-[110px] border border-main dark:border-white rounded-md" id="message" name="message" placeholder="Mesajınız" required></textarea>
+                            <textarea class="w-full p-[10px] min-h-[110px] border border-main dark:border-white rounded-md text-black" id="message" name="message" placeholder="Mesajınız" required></textarea>
                         </div>
                         <div class="flex justify-end">
                             <button type="submit" class="gelatine w-full lg:w-full p-[8px] bg-second text-white text-[18px] font-[600] rounded-md">Gönder</button>
