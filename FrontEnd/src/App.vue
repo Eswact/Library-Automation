@@ -4,6 +4,7 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios';
 import VueJwtDecode from 'vue-jwt-decode';
 import { setlocalstorage, getlocalstorage, validateEmail } from './scripts/common';
+import { toast } from 'vue3-toastify';
 
 const userRole = ref([]);
 const router = useRouter();
@@ -14,16 +15,16 @@ const updateAdminPageStatus = () => {
 };
 
 onMounted(() => {
-  // error-handler
-  if (getlocalstorage('errMsg') != '') {
-    alert(getlocalstorage('errMsg'));
-    setlocalstorage('errMsg', '');
-  }
-
   // admin-page
   updateAdminPageStatus();
   router.afterEach((to) => {
     updateAdminPageStatus(to);
+    // error-handler
+    if (getlocalstorage('errMsg') != '') {
+      console.log(getlocalstorage('errMsg'));
+      toast(getlocalstorage('errMsg'), { autoClose: 3000, type: "error", position: "bottom-right" });
+      setlocalstorage('errMsg', '');
+    }
   });
 
   // dark-mode
@@ -90,20 +91,20 @@ const loginControl = async () => {
 const loginUser = async () => {
   const username = document.querySelector('.sign-section[data-section="1"] input[type="text"]').value;
   const password = document.querySelector('.sign-section[data-section="1"] input[type="password"]').value;
-  if (username == '' || password == '') return alert('Kullanıcı adı veya şifre boş olamaz.');
+  if (username == '' || password == '') return toast('Kullanıcı adı veya şifre boş olamaz.', { autoClose: 3000, type: "error", position: "bottom-right" });
   try {
     const response = await axios.post('http://localhost:3000/api/users/login', {username: username, password: password});
     const token = response.data;
     const decodedToken = VueJwtDecode.decode(token);
     setlocalstorage('user', token);
-    alert('Giriş Başarılı! Hoşgeldin ' + decodedToken.username);
+    toast('Giriş Başarılı! Hoşgeldin ' + decodedToken.username, { autoClose: 3000, type: "success", position: "bottom-right" });
     closeForm();
     loginControl();
   } catch (error) {
     console.error('Error:', error.message);
     document.querySelector('.sign-section[data-section="1"] input[type="text"]').value = '';
     document.querySelector('.sign-section[data-section="1"] input[type="password"]').value = '';
-    alert('Giriş Başarısız! Kullanıcı adı veya şifre hatalı.');
+    toast('Giriş Başarısız! Kullanıcı adı veya şifre hatalı.', { autoClose: 3000, type: "error", position: "bottom-right" });
   }
 };
 
@@ -111,19 +112,19 @@ const registerUser = async () => {
   const username = document.querySelector('.sign-section[data-section="2"] input[type="text"]').value;
   const mail = document.querySelector('.sign-section[data-section="2"] input[type="mail"]').value;
   const password = document.querySelector('.sign-section[data-section="2"] input[type="password"]').value;
-  if (username == '' || mail == '' || password == '') return alert('Kullanıcı adı, e-mail veya şifre boş olamaz.');
-  if (!validateEmail(mail)) return alert('Geçerli bir e-mail adresi giriniz.');
+  if (username == '' || mail == '' || password == '') return toast('Kullanıcı adı, e-mail veya şifre boş olamaz.', { autoClose: 3000, type: "error", position: "bottom-right" });
+  if (!validateEmail(mail)) return toast('Geçerli bir e-mail adresi giriniz.', { autoClose: 3000, type: "error", position: "bottom-right" });
   try {
     const response = await axios.post('http://localhost:3000/api/users/register', {username: username, mail: mail, password: password});
-    if (response.status == 200) alert('Kayıt Başarılı! Hoşgeldin ' + response.data.username);
-    else alert(`${response.message}`);
+    if (response.status == 200) toast('Kayıt Başarılı! Hoşgeldin ' + response.data.username, { autoClose: 3000, type: "success", position: "bottom-right" });
+    else toast(`${response.message}`, { autoClose: 3000, type: "error", position: "bottom-right" });
     closeForm();
   } catch (error) {
     console.error('Error:', error.message);
     document.querySelector('.sign-section[data-section="2"] input[type="text"]').value = '';
     document.querySelector('.sign-section[data-section="2"] input[type="mail"]').value = '';
     document.querySelector('.sign-section[data-section="2"] input[type="password"]').value = '';
-    alert('Kayıt Başarısız! Kullanıcı adı veya e-mail kullanılmakta.');
+    toast('Kayıt Başarısız! Kullanıcı adı veya e-mail kullanılmakta.', { autoClose: 3000, type: "error", position: "bottom-right" });
   }
 };
 
