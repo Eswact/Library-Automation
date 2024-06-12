@@ -1,100 +1,152 @@
 <script setup>
-    import { ref, onMounted, watch, onBeforeUnmount} from 'vue';
-    import AjaxScripts from '../scripts/ajaxScripts.js';
-    import { getImageFromUploads, getDetailsPage } from '../scripts/common.js';
-    import { useRouter } from 'vue-router';
-    const router = useRouter();
+  import { ref, onMounted, watch } from 'vue';
+  import AjaxScripts from '../scripts/ajaxScripts.js';
+  import { getImageFromUploads, getDetailsPage } from '../scripts/common.js';
+  import { useRouter } from 'vue-router';
 
-    const books = ref([]);
-    const writers = ref([]);
-    const categories = ref([]);
-    const publishers = ref([]);
-    const originalBooks = ref([]);
-    const searchBook = ref('');
-    const selectedWriter = ref(0);
-    const selectedCategory = ref(0);
-    const selectedPublisher = ref(0);
-    const canRent = ref(false);
-    function getBooks() {
-        let onSuccess = (res) => {
-            books.value = res;
-            originalBooks.value = res;
-        };
-        let onError = (err) => {
-            console.log(err);
-        };
-        AjaxScripts.GetBooks({onSuccess, onError});
-    }
-    function getWriters() {
-        let onSuccess = (res) => {
-            writers.value = res; 
-        };
-        let onError = (err) => {
-            console.log(err);
-        };
-        AjaxScripts.GetWriters({onSuccess, onError});
-    }
-    function getCategories() {
-        let onSuccess = (res) => {
-            categories.value = res; 
-        };
-        let onError = (err) => {
-            console.log(err);
-        };
-        AjaxScripts.GetCategories({onSuccess, onError});
-    }
-    function getPublishers() {
-        let onSuccess = (res) => {
-            publishers.value = res; 
-        };
-        let onError = (err) => {
-            console.log(err);
-        };
-        AjaxScripts.GetPublishers({onSuccess, onError});
-    }
-    const fetchDatas = async function(){
-        await getBooks();
-        await getWriters();
-        await getCategories();
-        await getPublishers();
-    }
-    function applyFilters() {
-        let filteredBooks = originalBooks.value;
-        console.log(filteredBooks);
-        if (searchBook.value != '') {
-            filteredBooks = filteredBooks.filter(x => x.name.toLowerCase().includes(searchBook.value.toLowerCase()));
-        }
-        if (selectedWriter.value != 0) {
-            filteredBooks = filteredBooks.filter(x => x.writer == selectedWriter.value);
-        }
-        if (selectedCategory.value != 0) {
-            filteredBooks = filteredBooks.filter(x => x.category == selectedCategory.value);
-        }
-        if (selectedPublisher.value != 0) {
-            filteredBooks = filteredBooks.filter(x => x.publisher == selectedPublisher.value);
-        }
-        if (canRent.value) {
-            filteredBooks = filteredBooks.filter(x => x.isBorrowed == false);
-        }
-        books.value = filteredBooks;
-    }
-    function clearFilter() {
-        searchBook.value = '';
-        selectedWriter.value = 0;
-        selectedCategory.value = 0;
-        selectedPublisher.value = 0;
-        canRent.value = false;
-        applyFilters();
-    }
+  const router = useRouter();
 
-    onMounted(() => {
-        fetchDatas().then(() => {
-            watch([searchBook, selectedWriter, selectedCategory, selectedPublisher, canRent], () => {
-                applyFilters();
-            });
+  const books = ref([]);
+  const writers = ref([]);
+  const categories = ref([]);
+  const publishers = ref([]);
+  const originalBooks = ref([]);
+  const searchBook = ref('');
+  const selectedWriter = ref(0);
+  const selectedCategory = ref(0);
+  const selectedPublisher = ref(0);
+  const canRent = ref(false);
+
+  async function fetchDatas() {
+    await Promise.all([
+      getBooks(),
+      getWriters(),
+      getCategories(),
+      getPublishers()
+    ]);
+  }
+
+  function getBooks() {
+    return new Promise((resolve, reject) => {
+      AjaxScripts.GetBooks({
+        onSuccess: (res) => {
+          books.value = res;
+          originalBooks.value = res;
+          resolve();
+        },
+        onError: (err) => {
+          console.log(err);
+          reject(err);
+        }
+      });
+    });
+  }
+
+  function getWriters() {
+    return new Promise((resolve, reject) => {
+      AjaxScripts.GetWriters({
+        onSuccess: (res) => {
+          writers.value = res;
+          resolve();
+        },
+        onError: (err) => {
+          console.log(err);
+          reject(err);
+        }
+      });
+    });
+  }
+
+  function getCategories() {
+    return new Promise((resolve, reject) => {
+      AjaxScripts.GetCategories({
+        onSuccess: (res) => {
+          categories.value = res;
+          resolve();
+        },
+        onError: (err) => {
+          console.log(err);
+          reject(err);
+        }
+      });
+    });
+  }
+
+  function getPublishers() {
+    return new Promise((resolve, reject) => {
+      AjaxScripts.GetPublishers({
+        onSuccess: (res) => {
+          publishers.value = res;
+          resolve();
+        },
+        onError: (err) => {
+          console.log(err);
+          reject(err);
+        }
+      });
+    });
+  }
+
+  function applyFilters() {
+    let filteredBooks = originalBooks.value;
+    if (searchBook.value !== '') {
+      filteredBooks = filteredBooks.filter(x => x.name.toLowerCase().includes(searchBook.value.toLowerCase()));
+    }
+    if (selectedWriter.value !== 0) {
+      filteredBooks = filteredBooks.filter(x => x.writer == selectedWriter.value);
+    }
+    if (selectedCategory.value !== 0) {
+      filteredBooks = filteredBooks.filter(x => x.category == selectedCategory.value);
+    }
+    if (selectedPublisher.value !== 0) {
+      filteredBooks = filteredBooks.filter(x => x.publisher == selectedPublisher.value);
+    }
+    if (canRent.value) {
+      filteredBooks = filteredBooks.filter(x => x.isBorrowed == false);
+    }
+    books.value = filteredBooks;
+  }
+
+  function clearFilter() {
+    searchBook.value = '';
+    selectedWriter.value = 0;
+    selectedCategory.value = 0;
+    selectedPublisher.value = 0;
+    canRent.value = false;
+    applyFilters();
+  }
+
+  onMounted(() => {
+    const catIdFromQuery = router.currentRoute.value.query.category;
+    if (catIdFromQuery) {
+      selectedCategory.value = parseInt(catIdFromQuery);
+      // Bu satırı kullanmak yerine, selectedCategory'nin değişmesini izleyen
+      // bir watch kullanarak DOM manipülasyonu yapmayı tercih edebilirsiniz.
+      // document.getElementById('categorySelect').value = catIdFromQuery;
+        watch(selectedCategory, (newValue) => {
+            const currentRoute = router.currentRoute.value;
+            const query = { ...currentRoute.query };
+
+            if (newValue !== 0) {
+            query.category = newValue.toString();
+            } else {
+            delete query.category; // Remove category from query params
+            }
+
+            // Update URL without reloading
+            router.push({ query });
         });
+    }
+
+    fetchDatas().then(() => {
+      applyFilters();
+      watch([searchBook, selectedWriter, selectedCategory, selectedPublisher, canRent], () => {
         applyFilters();
-    }); 
+      });
+    });
+
+    console.log('Books loaded:', books.value);
+  });
 </script>
 
 <template>
@@ -102,27 +154,27 @@
         <div class="fixed flex flex-col gap-[12px] items-center justify-start w-[235px] pt-[24px] pb-[34px] border-[1px] border-black dark:border-white shadow-md dark:shadow-lg dark:shadow-[rgba(225,225,225,0.55)] rounded-[10px] px-[18px] md:hidden">
             <button @click="clearFilter()" class="w-full px-[12px] py-[6px] border-[1px] border-second-shadow bg-second text-white text-[18px] font-semibold shadow-md shadow-second-shadow rounded-[8px] mb-[12px]">Temizle</button>
             <div class="w-full flex flex-col px-[12px] pt-[8px] pb-[12px] items-center justify-center border-[1px] border-[#ddd] rounded-[6px] gap-[8px]">
-                <label for="writerSelect" class="text-[18px] font-semibold">Kitap</label>
+                <label for="searchBook" class="text-[18px] font-semibold">Kitap</label>
                 <input v-model="searchBook" id="searchBook" type="text" placeholder="Kitap adı" class="w-full border-[1px] px-[4px] py-[2px] border-[#ddd] rounded-[4px] text-center dark:text-black">
             </div>
             <div class="w-full flex flex-col px-[12px] pt-[8px] pb-[12px] items-center justify-center border-[1px] border-[#ddd] rounded-[6px] gap-[8px]">
                 <label for="writerSelect" class="text-[18px] font-semibold">Yazar</label>
                 <select v-model="selectedWriter" name="writerSelect" id="writerSelect" class="w-full border-[1px] border-[#ddd] dark:text-black rounded-[4px] px-[4px] py-[2px]">
-                    <option class="p-[4px] border-b-[1px] border-black" value=0>Seçim yapınız</option>
+                    <option class="p-[4px] border-b-[1px] border-black" value=0 disabled>Seçim yapınız</option>
                     <option class="p-[4px] border-b-[1px] border-black" v-for="writer in writers" :key="writer.writerId" :value="writer.writerId">{{ writer.name }}</option>
                 </select>
             </div>
             <div class="w-full flex flex-col px-[12px] pt-[8px] pb-[12px] items-center justify-center border-[1px] border-[#ddd] rounded-[6px] gap-[8px]">
                 <label for="categorySelect" class="text-[18px] font-semibold">Kategori</label>
                 <select v-model="selectedCategory" name="categorySelect" id="categorySelect" class="w-full border-[1px] border-[#ddd] dark:text-black rounded-[4px] px-[4px] py-[2px]">
-                    <option value=0>Seçim yapınız</option>
+                    <option value=0 disabled>Seçim yapınız</option>
                     <option v-for="category in categories" :key="category.catId" :value="category.catId">{{ category.name }}</option>
                 </select>
             </div>
             <div class="w-full flex flex-col px-[12px] pt-[8px] pb-[12px] items-center justify-center border-[1px] border-[#ddd] rounded-[6px] gap-[8px]">
                 <label for="publisherSelect" class="text-[18px] font-semibold">Yayınevi</label>
                 <select v-model="selectedPublisher" name="publisherSelect" id="publisherSelect" class="w-full border-[1px] border-[#ddd] dark:text-black rounded-[4px] px-[4px] py-[2px]">
-                    <option value=0>Seçim yapınız</option>
+                    <option value=0 disabled>Seçim yapınız</option>
                     <option v-for="publisher in publishers" :key="publisher.publisherId" :value="publisher.publisherId">{{ publisher.name }}</option>
                 </select>
             </div>

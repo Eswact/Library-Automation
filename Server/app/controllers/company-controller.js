@@ -12,6 +12,26 @@ const getInfos = async (req, res) => {
   }
 };
 
+const updateInfos = async (req, res) => {
+  try {
+    const companyId = "658877c170b8c5f264229417";
+    const updateData = req.body;
+    const updatedCompany = await company.findOneAndUpdate(
+      { _id: companyId },
+      { $set: updateData },
+      { new: true }
+    );
+    if (!updatedCompany) {
+      return res.status(404).json({ message: 'Company not found' });
+    }
+    res.json(updatedCompany);
+  } catch (error) {
+    res.status(500).send({
+      message: error.message || "Some error occurred while updating Company info."
+    });
+  }
+};
+
 const sendMail = async (req, res) => {
   try {
     const companyMail = "erensaribay37@gmail.com";
@@ -45,5 +65,6 @@ const sendMail = async (req, res) => {
 
 module.exports = {
     getInfos,
+    updateInfos,
     sendMail
 };

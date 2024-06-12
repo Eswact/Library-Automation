@@ -6,7 +6,9 @@
     import 'swiper/css/navigation';
     import { Autoplay, Pagination, Navigation } from 'swiper/modules';
     import AjaxScripts from '../scripts/ajaxScripts.js';
-    import { getImageFromUploads } from '../scripts/common.js';
+    import { getImageFromUploads, getDetailsPage } from '../scripts/common.js';
+    import { useRouter } from 'vue-router';
+    const router = useRouter();
 
     const bannerContent = ref([]);
     const categoryContent = ref([]);
@@ -56,6 +58,7 @@
         };
         AjaxScripts.GetBooks({onSuccess, onError});
     }
+
     onMounted(() => {
         getBanners();
         getCategories();
@@ -66,6 +69,10 @@
             window.removeEventListener('resize', handleResize);
         });
     });
+
+    function directBooksWithCategory(catId) {
+        window.location.href = `/books?category=${catId}`;
+    }
 </script>
 
 <template>
@@ -109,7 +116,7 @@
                     class="w-full h-[100px] sm:h-[80px] px-[50px]"
                 >
                     <swiper-slide v-for="(item, index) in categoryContent" :key="index">
-                        <div class="flex justify-center items-center overflow-hidden rounded-[16px] h-full w-full border-[1px] border-second-shadow shadow-sm shadow-second-shadow">
+                        <div @click="directBooksWithCategory(item.catId)" class="flex justify-center items-center overflow-hidden rounded-[16px] h-full w-full border-[1px] border-second-shadow shadow-sm shadow-second-shadow">
                             <img :src="getImageFromUploads(`categories/${item.img}`)" alt="category" class="w-full h-full opacity-[85%]">
                             <span class="absolute text-[32px] text-white font-bold mb-[8px] text-center">{{ item.name }}</span>
                         </div>

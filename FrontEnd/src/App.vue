@@ -201,7 +201,7 @@ document.addEventListener('keyup', function(e) {
       </div>
   </header>
   <!-- body -->
-  <RouterView class="mt-[100px] max-w-[100rem] z-[1]"/>
+  <RouterView class="mt-[100px] max-w-[100rem]"/>
   <!-- footer -->
   <footer></footer>
 

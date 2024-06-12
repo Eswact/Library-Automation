@@ -1,4 +1,8 @@
 const express = require("express");
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
 const router = express.Router();
 const bookRoutes = require("./book-routes");
 const categoryRoutes = require("./category-routes");
@@ -7,6 +11,7 @@ const homeRoutes = require("./home-routes");
 const writerRoutes = require("./writer-routes");
 const publisherRoutes = require("./publisher-routes");
 const companyRoutes = require("./company-routes");
+const adminRoutes = require("./admin-routes");
 
 chooseMethod = (method, path, func) => { 
     switch (method) {
@@ -15,6 +20,9 @@ chooseMethod = (method, path, func) => {
             break;
         case "post":
             router.post(path, func);
+            break;
+        case "postSingleFile":
+            router.post(path, upload.single('file'), func);
             break;
         case "put":
             router.put(path, func);
@@ -47,6 +55,9 @@ publisherRoutes.forEach(({ method, path, func }) => {
 });
 companyRoutes.forEach(({ method, path, func }) => {
     chooseMethod(method, `/company/${path}`, func);
+});
+adminRoutes.forEach(({ method, path, func }) => {
+    chooseMethod(method, `/admin/${path}`, func);
 });
 
 module.exports = router;
