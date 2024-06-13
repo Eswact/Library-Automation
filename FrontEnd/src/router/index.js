@@ -8,27 +8,32 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('../views/HomeView.vue')
+      component: () => import('../views/HomeView.vue'),
+      meta: { requiresAuth: false, requiresAdmin: false } 
     },
     {
       path: '/books',
       name: 'books',
-      component: () => import('../views/BooksView.vue')
+      component: () => import('../views/BooksView.vue'),
+      meta: { requiresAuth: false, requiresAdmin: false } 
     },
     {
       path: '/detail/:bookId',
       name: 'detail',
-      component: () => import('../views/BookDetail.vue')
+      component: () => import('../views/BookDetail.vue'),
+      meta: { requiresAuth: false, requiresAdmin: false } 
     },
     {
       path: '/about',
       name: 'about',
-      component: () => import('../views/AboutView.vue')
+      component: () => import('../views/AboutView.vue'),
+      meta: { requiresAuth: false, requiresAdmin: false } 
     },
     {
       path: '/contact',
       name: 'contact',
-      component: () => import('../views/ContactView.vue')
+      component: () => import('../views/ContactView.vue'),
+      meta: { requiresAuth: false, requiresAdmin: false } 
     },
     // Admin Routes
     {
@@ -59,18 +64,28 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  console.log(VueJwtDecode.decode(localStorage.getItem('user')));
-  const isAuthenticated = localStorage.getItem('user');
-  const isAdmin = isAuthenticated && VueJwtDecode.decode(localStorage.getItem('user')).role === 0;
-  
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    next({ name: 'home' }); // Kullanıcı oturum açmamışsa ve sayfa oturum gerektiriyorsa ana sayfaya yönlendir
-    setlocalstorage('errMsg' , 'Bu sayfayı görüntülemek için yönetici olarak oturum açmalısınız.');
-  } else if (to.meta.requiresAdmin && (!isAuthenticated || !isAdmin)) {
-    next({ name: 'home' }); // Kullanıcı yönetici değilse ve sayfa yönetici yetkisi gerektiriyorsa ana sayfaya yönlendir
-    setlocalstorage('errMsg' , 'Bu sayfayı görüntülemek için yönetici olmalısınız.');
-  } else {
-    next();
+  if (localStorage.getItem('user')) {
+    const isAuthenticated = localStorage.getItem('user');
+    const isAdmin = isAuthenticated && VueJwtDecode.decode(localStorage.getItem('user')).role === 0;
+    
+    if (to.meta.requiresAuth && !isAuthenticated) {
+      next({ name: 'home' }); // Kullanıcı oturum açmamışsa ve sayfa oturum gerektiriyorsa ana sayfaya yönlendir
+      setlocalstorage('errMsg' , 'Bu sayfayı görüntülemek için yönetici olarak oturum açmalısınız.');
+    } else if (to.meta.requiresAdmin && (!isAuthenticated || !isAdmin)) {
+      next({ name: 'home' }); // Kullanıcı yönetici değilse ve sayfa yönetici yetkisi gerektiriyorsa ana sayfaya yönlendir
+      setlocalstorage('errMsg' , 'Bu sayfayı görüntülemek için yönetici olmalısınız.');
+    } else {
+      next();
+    }
+  }
+  else {
+    if (to.meta.requiresAuth) {
+      next({ name: 'home' });
+      setlocalstorage('errMsg' , 'Bu sayfayı görüntülemek için yönetici olarak oturum açmalısınız.');
+    }
+    else {
+      next();
+    }
   }
 });
 
