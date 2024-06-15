@@ -44,6 +44,24 @@ const AjaxScripts = {
   UpdateCompanyInfos: function ({ data, onSuccess, onError }) {
     postData("company/updateInfos", data, onSuccess, onError);
   },
+  CreateWriter: function ({ data, onSuccess, onError }) {
+    postData("writers/create", data, onSuccess, onError);
+  },
+  UpdateWriter: function ({ data, onSuccess, onError }) {
+    postData("writers/update", data, onSuccess, onError);
+  },
+  DeleteWriter: function ({ data, onSuccess, onError }) {
+    postData(`writers/delete/${data}`, null, onSuccess, onError);
+  },
+  CreatePublisher: function ({ data, onSuccess, onError }) {
+    postData("publishers/create", data, onSuccess, onError);
+  },
+  UpdatePublisher: function ({ data, onSuccess, onError }) {
+    postData("publishers/update", data, onSuccess, onError);
+  },
+  DeletePublisher: function ({ data, onSuccess, onError }) {
+    postData(`publishers/delete/${data}`, null, onSuccess, onError);
+  },
 };
 
 export default AjaxScripts;
