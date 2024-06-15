@@ -28,8 +28,8 @@ const AjaxScripts = {
   SendMail: function ({ data, onSuccess, onError }) {
     postData(`company/sendMail`, data, onSuccess, onError);
   },
-  SaveBannerImg: function ({ data, onSuccess, onError }) {
-    postFormData("admin/addBannerImage", data, onSuccess, onError);
+  SaveImg2Upload: function ({ data, onSuccess, onError }) {
+    postFormData("admin/addImage2Upload", data, onSuccess, onError);
   },
   AddBanner: function ({ data, onSuccess, onError }) {
     postData("home/banners/create", data, onSuccess, onError);
@@ -37,9 +37,6 @@ const AjaxScripts = {
   DeleteBanner: function ({ data, onSuccess, onError }) {
     console.log(data);
     postData(`home/banners/delete/${data}`, null, onSuccess, onError);
-  },
-  SaveCompanyImg: function ({ data, onSuccess, onError }) {
-    postFormData("admin/addCompanyImage", data, onSuccess, onError);
   },
   UpdateCompanyInfos: function ({ data, onSuccess, onError }) {
     postData("company/updateInfos", data, onSuccess, onError);
@@ -61,6 +58,15 @@ const AjaxScripts = {
   },
   DeletePublisher: function ({ data, onSuccess, onError }) {
     postData(`publishers/delete/${data}`, null, onSuccess, onError);
+  },
+  CreateCategory: function ({ data, onSuccess, onError }) {
+    postData("categories/create", data, onSuccess, onError);
+  },
+  UpdateCategory: function ({ data, onSuccess, onError }) {
+    postData("categories/update", data, onSuccess, onError);
+  },
+  DeleteCategory: function ({ data, onSuccess, onError }) {
+    postData(`categories/delete/${data}`, null, onSuccess, onError);
   },
 };
 

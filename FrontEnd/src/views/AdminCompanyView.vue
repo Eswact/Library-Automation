@@ -62,7 +62,8 @@
         console.log('name -> ', file.name);
         if (control && file) {
             let data = {
-                file: file
+                file: file,
+                path: 'banners'
             };
             let onSuccess = (res) => {
                 console.log('Başarılı');
@@ -70,7 +71,7 @@
             let onError = (err) => {
                 console.error('Bir hata oluştu:', err);
             };
-            AjaxScripts.SaveBannerImg({data, onSuccess, onError});
+            AjaxScripts.SaveImg2Upload({data, onSuccess, onError});
 
             let data2 = {
                 img: file.name,
@@ -79,26 +80,26 @@
             };
             let onSuccess2 = (res) => {
                 getBanners();
-                alert("Yeni Afiş Eklendi");
+                toast("Yeni Afiş Eklendi", { autoClose: 3000, type: "success", position: "bottom-right" });
             };
             let onError2 = (err) => {
-                alert("Yeni Afiş Eklenirken Hata");
+                toast("Yeni Afiş Eklenirken Hata", { autoClose: 3000, type: "error", position: "bottom-right" });
             };
             AjaxScripts.AddBanner({data: data2, onSuccess: onSuccess2, onError: onError2});
             closeBannerModal();
         }
         else {
-            alert("Lütfen tüm alanları doldurunuz.");
+            toast.error("Lütfen tüm alanları doldurunuz.", { timeout: 3000 });
         }
     };
     const deleteBanner = (bannerId) => {
         let data = bannerId;
         let onSuccess = (res) => {
-            alert("Afiş Kaldırıldı");
+            toast("Afiş Kaldırıldı.", { autoClose: 3000, type: "success", position: "bottom-right" });
             getBanners();
         };
         let onError = (err) => {
-            alert("Afiş Kaldırılırken Hata");
+            toast("Afiş Kaldırılırken Hata", { autoClose: 3000, type: "error", position: "bottom-right" });
         };
         AjaxScripts.DeleteBanner({data, onSuccess, onError});
     };
@@ -115,7 +116,8 @@
         const fileAbout = document.getElementById('fileInputAbout').files[0];
         if (fileAbout) {
             let data = {
-                file: fileAbout
+                file: fileAbout,
+                path: 'company'
             };
             let onSuccess = (res) => {
                 console.log('Başarılı');
@@ -123,7 +125,7 @@
             let onError = (err) => {
                 console.error('Bir hata oluştu:', err);
             };
-            AjaxScripts.SaveCompanyImg({data, onSuccess, onError});
+            AjaxScripts.SaveImg2Upload({data, onSuccess, onError});
         }
         let data = {
             about: {
@@ -135,11 +137,11 @@
             }
         };
         let onSuccess = (res) => {
-            alert("Kütüphane Bilgileri Güncellendi");
+            toast("Kütüphane Bilgileri Güncellendi.", { autoClose: 3000, type: "success", position: "bottom-right" });
             getCompanyInfos();
         };
         let onError = (err) => {
-            alert("Kütüphane Bilgileri Güncellenirken Hata");
+            toast("Kütüphane Bilgileri Güncellenirken Hata", { autoClose: 3000, type: "error", position: "bottom-right" });
         };
         AjaxScripts.UpdateCompanyInfos({data, onSuccess, onError});
     }
@@ -147,7 +149,8 @@
         const fileContact = document.getElementById('fileInputContact').files[0];
         if (fileContact) {
             let data = {
-                file: fileContact
+                file: fileContact,
+                path: 'company'
             };
             let onSuccess = (res) => {
                 console.log('Başarılı');
@@ -155,7 +158,7 @@
             let onError = (err) => {
                 console.error('Bir hata oluştu:', err);
             };
-            AjaxScripts.SaveCompanyImg({data, onSuccess, onError});
+            AjaxScripts.SaveImg2Upload({data, onSuccess, onError});
         }
         let data = {
             contact: {
@@ -167,11 +170,11 @@
             },
         };
         let onSuccess = (res) => {
-            alert("Kütüphane Bilgileri Güncellendi");
+            toast("Kütüphane Bilgileri Güncellendi", { autoClose: 3000, type: "success", position: "bottom-right" });
             getCompanyInfos();
         };
         let onError = (err) => {
-            alert("Kütüphane Bilgileri Güncellenirken Hata");
+            toast("Kütüphane Bilgileri Güncellenirken Hata", { autoClose: 3000, type: "error", position: "bottom-right" });
         };
         AjaxScripts.UpdateCompanyInfos({data, onSuccess, onError});
     }
@@ -302,7 +305,7 @@
                                     <font-awesome-icon icon="fa-solid fa-upload" size="xl" />
                                 </div>
                                 <div v-else class="w-full h-full rounded-[6px] overflow-hidden relative">
-                                    <button @click="clearAbout()" class="gelatine clearItem absolute top-[8px] right-[8px] py-[8px] px-[12px] text-white bg-red-600 rounded-[10px]"><font-awesome-icon :icon="['fas', 'trash-can']" size="xl"/></button>
+                                    <button @click="clearAbout()" class="gelatine clearItem absolute top-[8px] right-[8px] py-[8px] px-[12px] text-white bg-red-600 rounded-[10px]"><font-awesome-icon icon="fa-solid fa-trash-can" size="xl"/></button>
                                     <img :src="selectedImageAbout" alt="Contact" class="w-full h-full object-cover">
                                 </div>
                             </div>
@@ -331,7 +334,7 @@
                                 <font-awesome-icon icon="fa-solid fa-upload" size="xl" />
                             </div>
                             <div v-else class="w-full h-full rounded-[6px] overflow-hidden relative">
-                                <button @click="clearContact()" class="gelatine clearItem absolute top-[8px] right-[8px] py-[8px] px-[12px] text-white bg-red-600 rounded-[10px]"><font-awesome-icon :icon="['fas', 'trash-can']" size="xl"/></button>
+                                <button @click="clearContact()" class="gelatine clearItem absolute top-[8px] right-[8px] py-[8px] px-[12px] text-white bg-red-600 rounded-[10px]"><font-awesome-icon icon="fa-solid fa-trash-can" size="xl"/></button>
                                 <img :src="selectedImageContact" alt="Contact" class="w-full h-full object-cover">
                             </div>
                         </div>

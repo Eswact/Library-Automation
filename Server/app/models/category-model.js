@@ -4,7 +4,8 @@ module.exports = mongoose => {
       mongoose.Schema(
         {
           catId: Number,
-          name: String
+          name: String,
+          img: String,
         },
         { timestamps: true }
       )

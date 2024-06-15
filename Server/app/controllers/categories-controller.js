@@ -27,6 +27,7 @@ const findOne = async (req, res) => {
 
 // Create and save a new category
 const create = async (req, res) => {
+  console.log(req.body);
   try {
     const latestCategory = await categories.findOne().sort({ catId: -1 });
     req.body.catId = latestCategory ? latestCategory.catId + 1 : 1;
@@ -35,6 +36,30 @@ const create = async (req, res) => {
     res.status(201).json(savedCategory);
   } catch (error) {
     res.status(500).send({ message: error.message || "Some error occurred while creating the category." });
+  }
+};
+
+// Update a category by the id in the request
+const update = async (req, res) => {
+  try {
+    const catId = req.body.id;
+    const updateCategoryData = {
+      name: req.body.name,
+      img: req.body.img,
+    }
+    const updatedCategory = await categories.findOneAndUpdate(
+      { catId: catId },
+      { $set: updateCategoryData },
+      { new: true }
+    );
+    if (!updatedCategory) {
+      return res.status(404).json({ message: 'category not found' });
+    }
+    res.json(updatedCategory);
+  } catch (error) {
+    res.status(500).send({
+      message: error.message || "Some error occurred while updating category."
+    });
   }
 };
 
@@ -55,5 +80,6 @@ module.exports = {
   findAll,
   findOne,
   create,
+  update,
   deleteOne
 };

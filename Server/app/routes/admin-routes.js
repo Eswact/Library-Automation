@@ -1,7 +1,6 @@
-const books = require("../controllers/admin-controller.js");
+const admin = require("../controllers/admin-controller.js");
 const endpoints= [  
-    { method: "postSingleFile", path: "addBannerImage", func: books.addBannerImage },
-    { method: "postSingleFile", path: "addCompanyImage", func: books.addCompanyImage },
+    { method: "postSingleFile", path: "addImage2Upload", func: admin.addImage2Upload },
 ]
 
 module.exports = endpoints;
