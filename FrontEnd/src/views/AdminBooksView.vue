@@ -16,9 +16,9 @@
         if (document.getElementById('categoryModal').classList.contains('open')) {
             document.getElementById('fileInputCategory').click();
         }
-        // if (document.getElementById('bookModal').classList.contains('open')) {
-        //     document.getElementById('fileInputBook').click();
-        // }
+        if (document.getElementById('bookModal').classList.contains('open')) {
+            document.getElementById('fileInputBook').click();
+        }
     };
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -406,6 +406,149 @@
         AjaxScripts.DeleteCategory({data, onSuccess, onError});
     };
 
+    // Book Modal
+    const openBookModal = (editId) => {
+        resetFormInputs();
+        if (editId) {
+            //Edit
+            document.getElementById('bookModal').dataset.editId = editId;
+            let thisBook = books.value.find(x => x._id == editId);
+            selectedImage.value = getImageFromUploads(`books/${thisBook.images[0]}`);
+            document.getElementById('bookName').value = thisBook.name;
+            document.getElementById('writerSelect').value = thisBook.writer;
+            document.getElementById('categorySelect').value = thisBook.category;
+            document.getElementById('publisherSelect').value = thisBook.publisher;
+            document.getElementById('bookSubject').value = thisBook.subject;
+            document.getElementById('ageRange').value = thisBook.ageRange;
+        }
+        else {
+            //Add
+            document.getElementById('bookModal').dataset.editId = '';
+        }
+        document.getElementById('bookModal').classList.add('open');
+    };
+    const closeBookModal = () => {
+        document.getElementById('bookModal').classList.remove('open');
+        selectedImage.value = null;
+        resetFormInputs();
+    };
+    const saveBook = () => {
+        let control = controlInputs();
+        const file = document.getElementById('fileInputBook').files[0];
+        if (document.getElementById('bookModal').dataset.editId != '') {
+            //Edit
+            let thisBook = books.value.find(x => x._id == document.getElementById('bookModal').dataset.editId);
+            if (control) {
+                if (file) {
+                    let data = {
+                        file: file,
+                        path: 'books'
+                    };
+                    let onSuccess = (res) => {
+                        console.log('Başarılı');
+                    };
+                    let onError = (err) => {
+                        console.error('Bir hata oluştu:', err);
+                    };
+                    AjaxScripts.SaveImg2Upload({data, onSuccess, onError});
+                    
+                    let params = { id: document.getElementById('bookModal').dataset.editId };
+                    let data2 = {
+                        images: [file.name],
+                        name: document.getElementById('bookName').value,
+                        writer: document.getElementById('writerSelect').value,
+                        category: document.getElementById('categorySelect').value,
+                        publisher: document.getElementById('publisherSelect').value,
+                        subject: document.getElementById('bookSubject').value,
+                        ageRange: document.getElementById('ageRange').value,
+                    };
+                    let onSuccess2 = (res) => {
+                        getBooks();
+                        toast("Kitap Düzenlendi.", { autoClose: 3000, type: "success", position: "bottom-right" });
+                        closeBookModal();
+                    };
+                    let onError2 = (err) => {
+                        toast("Kitap Düzenlenirken Hata", { autoClose: 3000, type: "error", position: "bottom-right" });
+                    };
+                    AjaxScripts.UpdateBook({params: params, data: data2, onSuccess: onSuccess2, onError: onError2});
+                }
+                else {
+                    let params = { id: document.getElementById('bookModal').dataset.editId };
+                    let data = {
+                        images: thisBook.images,
+                        name: document.getElementById('bookName').value,
+                        writer: document.getElementById('writerSelect').value,
+                        category: document.getElementById('categorySelect').value,
+                        publisher: document.getElementById('publisherSelect').value,
+                        subject: document.getElementById('bookSubject').value,
+                        ageRange: document.getElementById('ageRange').value,
+                    };
+                    let onSuccess = (res) => {
+                        getBooks();
+                        toast("Kitap Düzenlendi.", { autoClose: 3000, type: "success", position: "bottom-right" });
+                        closeBookModal();
+                    };
+                    let onError = (err) => {
+                        toast("Kitap Düzenlenirken Hata", { autoClose: 3000, type: "error", position: "bottom-right" });
+                    };
+                    AjaxScripts.UpdateBook({params, data, onSuccess, onError});
+                }
+            }
+            else {
+                toast.error("Lütfen tüm alanları doldurunuz.", { timeout: 3000 });
+            }
+        }
+        else {
+            //Add
+            if (control && file) { 
+                let data = {
+                    file: file,
+                    path: 'books'
+                };
+                let onSuccess = (res) => {
+                    console.log('Başarılı');
+                };
+                let onError = (err) => {
+                    console.error('Bir hata oluştu:', err);
+                };
+                AjaxScripts.SaveImg2Upload({data, onSuccess, onError});
+
+                let data2 = {
+                    images: [file.name],
+                    name: document.getElementById('bookName').value,
+                    writer: document.getElementById('writerSelect').value,
+                    category: document.getElementById('categorySelect').value,
+                    publisher: document.getElementById('publisherSelect').value,
+                    subject: document.getElementById('bookSubject').value,
+                    ageRange: document.getElementById('ageRange').value,
+                };
+                let onSuccess2 = (res) => {
+                    getBooks();
+                    toast("Yeni Kitap Eklendi.", { autoClose: 3000, type: "success", position: "bottom-right" });
+                    closeBookModal();
+                };
+                let onError2 = (err) => {
+                    toast("Kitap Eklenirken Hata", { autoClose: 3000, type: "error", position: "bottom-right" });
+                };
+                AjaxScripts.CreateBook({data: data2, onSuccess: onSuccess2, onError: onError2});
+            }
+            else {
+                toast.error("Lütfen tüm alanları doldurunuz.", { timeout: 3000 });
+            }
+        }
+    };
+    const deleteBook = (bookId) => {
+        let data = bookId;
+        let onSuccess = (res) => {
+            toast("Kitap Kaldırıldı", { autoClose: 3000, type: "success", position: "bottom-right" });
+            getBooks();
+        };
+        let onError = (err) => {
+            toast("Kitap Kaldırılırken Hata", { autoClose: 3000, type: "error", position: "bottom-right" });
+        };
+        AjaxScripts.DeleteBook({data, onSuccess, onError});
+    };
+
     //Ready
     onMounted(() => {
         //Requests
@@ -444,14 +587,14 @@
                     <div v-for="book in books" :key="book._id" >
                         <div class="relative dark:bg-main-shadow cursor-pointer w-[210px] h-[240px] p-[10px] pt-[24px] border-[2px] border-main rounded-[12px] shadow-md shadow-main-shadow flex flex-col justify-center items-center gap-[12px]">
                             <div class="absolute top-[3px] w-full px-[6px] flex justify-between items-center text-[14px] font-semibold">
-                                <button class="gelatine py-[4px] px-[10px] text-white bg-second rounded-[10px]"><font-awesome-icon icon="fa-solid fa-pen" size="lg"/></button>
-                                <button class="gelatine py-[4px] px-[10px] text-white bg-red-600 rounded-[10px]"><font-awesome-icon icon="fa-solid fa-trash-can" size="lg"/></button>
+                                <button @click="openBookModal(book._id)" class="gelatine py-[4px] px-[10px] text-white bg-second rounded-[10px]"><font-awesome-icon icon="fa-solid fa-pen" size="lg"/></button>
+                                <button  @click="deleteBook(book._id)" class="gelatine py-[4px] px-[10px] text-white bg-red-600 rounded-[10px]"><font-awesome-icon icon="fa-solid fa-trash-can" size="lg"/></button>
                             </div>
                             <img :src="getImageFromUploads(`books/${book.images[0]}`)" :alt=book.name class="h-[150px] max-w-full rounded-[5px]">
                             <span :title=book.name class="text-[18px] font-semibold text-center truncate max-w-full">{{ book.name }}</span>
                         </div>
                     </div>
-                    <div>
+                    <div @click="openBookModal()">
                         <div class="relative dark:bg-main-shadow cursor-pointer w-[200px] h-[250px] p-[10px] border-[2px] border-main rounded-[12px] shadow-md shadow-main-shadow flex flex-col justify-center items-center gap-[12px]">
                             <div class="border-main border-[2px] rounded-[50%] text-main bg-white w-[50px] h-[50px] shadow-sm shadow-main flex justify-center items-center">
                                 <font-awesome-icon icon="fa-solid fa-plus" size="2xl"/>
@@ -549,6 +692,7 @@
             </div>
         </div>
 
+        <!-- Category Modal -->
         <div id="categoryModal" class="z-20 fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.8)] justify-center items-center dark:text-black">
             <div class="bg-white w-[400px] rounded-[10px] relative border-[1px] border-main-shadow shadow-lg shadow-main-shadow max-w-[95%]">
                 <div class="justify-between items-center px-[16px] py-[10px] border-b-[1px] shadow-md border-main-shadow">
@@ -570,6 +714,52 @@
                     </div>
                     <input type="text" id="categoryName" placeholder="Kategori adı giriniz..." class="formInputs requiredInputs border-[1px] rounded-[6px] px-[12px] py-[4px]" required>
                     <div class="flex justify-center items-center"><button type="button" @click="saveCategory" class="bg-second w-[120px] p-[4px] text-[17px] text-white rounded-[10px]">Kaydet</button></div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Book Modal -->
+        <div id="bookModal" class="z-20 fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.8)] justify-center items-center dark:text-black">
+            <div class="bg-white w-[800px] rounded-[10px] relative border-[1px] border-main-shadow shadow-lg shadow-main-shadow max-w-[95%]">
+                <div class="justify-between items-center px-[16px] py-[10px] border-b-[1px] shadow-md border-main-shadow">
+                    <h1 class="text-[20px] text-main font-[600]">Kitap Ekle</h1>
+                    <button class="absolute top-[-11px] right-[-13px] text-second" @click="closeBookModal"><font-awesome-icon :icon="['fas', 'circle-xmark']" size="2xl" class="bg-white rounded-[50%] shadow-lg shadow-second-shadow"/></button>
+                </div>
+                <form class="flex flex-col gap-[10px] p-[10px]" action="/upload" method="post" enctype="multipart/form-data">
+                    <div class="containImageSelector relative">
+                        <input type="file" id="fileInputBook" ref="fileInputBook" @change="handleFileChange" class="formInputs requiredInputs hidden" accept=".jpg, .jpeg, .png, .webp" required>
+                        <div class="w-full h-[240px] border-[1px] rounded-[6px] flex justify-center items-center cursor-pointer" @click="triggerFileInput" @dragover.prevent="handleDragOver" @drop.prevent="handleDrop">
+                            <div v-if="!selectedImage" class="flex flex-col gap-[10px] justify-center items-center text-center text-second">
+                                <span class="text-[18px]">Resim seçin veya sürükleyip bırakın</span>
+                                <font-awesome-icon icon="fa-solid fa-upload" size="xl" />
+                            </div>
+                            <div v-else class="w-full h-full rounded-[6px] overflow-hidden">
+                                <img :src="selectedImage" alt="Selected Image" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                    </div>
+                    <input type="text" id="bookName" placeholder="Kitap adını giriniz..." class="formInputs requiredInputs border-[1px] rounded-[6px] px-[12px] py-[4px]" required>
+                    <select name="categories" id="categorySelect" class="formSelects requiredSelects w-full text-[17px] text-[#333] dark:text-[#333] bg-transparent border-[1px] rounded-[6px] p-[4px]" required>
+                        <option value=0 selected>Kategori Seçimi</option>
+                        <option v-for="category in categories" :key="category.catId" :value="category.catId" :data-name="category.name">{{ category.name }}</option>
+                    </select>
+                    <select name="writers" id="writerSelect" class="formSelects requiredSelects w-full text-[17px] text-[#333] dark:text-[#333] bg-transparent border-[1px] rounded-[6px] p-[4px]" required> 
+                        <option value=0 selected>Yazar Seçimi</option>
+                        <option v-for="writer in writers" :key="writer.writerId" :value="writer.writerId" :data-name="writer.name">{{ writer.name }}</option>
+                    </select>
+                    <div class="w-full flex items-center gap-[2%]">
+                        <select name="publishers" id="publisherSelect" class="formSelects requiredSelects w-[49%] border-[1px] text-center p-[2px] rounded-[6px]" required> 
+                            <option value=0 selected>Yayınevi Seçimi</option>
+                            <option v-for="publisher in publishers" :key="publisher.publisherId" :value="publisher.publisherId" :data-name="publisher.name">{{ publisher.name }}</option>
+                        </select>
+                        <select id="ageRange" class="formSelects requiredSelects w-[49%] border-[1px] text-center p-[2px] rounded-[6px]" required>
+                            <option value="1" selected>Her Yaş</option>
+                            <option value="2">Çocuk</option>
+                            <option value="3">Yetişkin</option>
+                        </select>
+                    </div>
+                    <textarea id="bookSubject" class="formInputs border-[1px] px-[12px] py-[6px] rounded-[6px]" placeholder="Açıklama"></textarea>
+                    <div class="justify-center items-center"><button type="button" @click="saveBook" class="bg-second w-full p-[4px] text-[17px] text-white rounded-[10px]">Kaydet</button></div>
                 </form>
             </div>
         </div>
@@ -606,10 +796,10 @@
         background-color: #EEC681;
         color: white;
     }
-    #writerModal, #publisherModal, #categoryModal {
+    #writerModal, #publisherModal, #categoryModal, #bookModal {
         display: none;
     }
-    #writerModal.open, #publisherModal.open, #categoryModal.open{
+    #writerModal.open, #publisherModal.open, #categoryModal.open, #bookModal.open {
         display: flex;
     }
 </style>

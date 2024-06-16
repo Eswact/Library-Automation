@@ -129,7 +129,12 @@ onMounted(() => {
               <span class="font-semibold">{{ publisher.name }}</span>
             </div>
             <div class="flex items-center gap-[10px] text-second">
-              <span class="font-semibold">-</span>
+              <span class="font-semibold">
+                <span v-if="bookDetail.ageRange == 1">Her Yaş</span>
+                <span v-else-if="bookDetail.ageRange == 2">Çocuk</span>
+                <span v-else-if="bookDetail.ageRange == 3">Yetişkin</span>
+                <span v-else>-</span>
+              </span>
             </div>
           </div>
         </div>

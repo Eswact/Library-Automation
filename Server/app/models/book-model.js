@@ -9,7 +9,8 @@ module.exports = mongoose => {
           category: Number,
           isBorrowed: Boolean,
           images: Array,
-          subject: String
+          subject: String,
+          ageRange: Number,
         },
         { timestamps: true }
       )

@@ -68,6 +68,16 @@ const AjaxScripts = {
   DeleteCategory: function ({ data, onSuccess, onError }) {
     postData(`categories/delete/${data}`, null, onSuccess, onError);
   },
+  CreateBook: function ({ data, onSuccess, onError }) {
+    postData("books/create", data, onSuccess, onError);
+  },
+  UpdateBook: function ({ params, data, onSuccess, onError }) {
+    console.log(params);
+    postData(`books/update/${params.id}`, data, onSuccess, onError);
+  },
+  DeleteBook: function ({ data, onSuccess, onError }) {
+    postData(`books/delete/${data}`, null, onSuccess, onError);
+  },
 };
 
 export default AjaxScripts;
