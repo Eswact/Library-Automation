@@ -490,6 +490,7 @@
                         publisher: document.getElementById('publisherSelect').value,
                         subject: document.getElementById('bookSubject').value,
                         ageRange: document.getElementById('ageRange').value,
+                        isBorrowed: false
                     };
                     let onSuccess2 = (res) => {
                         getBooks();
@@ -512,6 +513,7 @@
                         publisher: document.getElementById('publisherSelect').value,
                         subject: document.getElementById('bookSubject').value,
                         ageRange: document.getElementById('ageRange').value,
+                        isBorrowed: false
                     };
                     let onSuccess = (res) => {
                         getBooks();
@@ -552,6 +554,7 @@
                     publisher: document.getElementById('publisherSelect').value,
                     subject: document.getElementById('bookSubject').value,
                     ageRange: document.getElementById('ageRange').value,
+                    isBorrowed: false
                 };
                 let onSuccess2 = (res) => {
                     getBooks();
@@ -752,7 +755,7 @@
 
         <!-- Book Modal -->
         <div id="bookModal" class="z-20 fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.8)] justify-center items-center dark:text-black">
-            <div class="bg-white w-[800px] rounded-[10px] relative border-[1px] border-main-shadow shadow-lg shadow-main-shadow max-w-[95%]">
+            <div class="bg-white w-[460px] rounded-[10px] relative border-[1px] border-main-shadow shadow-lg shadow-main-shadow max-w-[95%]">
                 <div class="justify-between items-center px-[16px] py-[10px] border-b-[1px] shadow-md border-main-shadow">
                     <h1 class="text-[20px] text-main font-[600]">Kitap Ekle</h1>
                     <button class="absolute top-[-11px] right-[-13px] text-second" @click="closeBookModal"><font-awesome-icon :icon="['fas', 'circle-xmark']" size="2xl" class="bg-white rounded-[50%] shadow-lg shadow-second-shadow"/></button>
@@ -760,13 +763,13 @@
                 <form class="flex flex-col gap-[10px] p-[10px]" action="/upload" method="post" enctype="multipart/form-data">
                     <div class="containImageSelector relative">
                         <input type="file" id="fileInputBook" ref="fileInputBook" @change="handleFileChange" class="formInputs requiredInputs hidden" accept=".jpg, .jpeg, .png, .webp" required>
-                        <div class="w-full h-[240px] border-[1px] rounded-[6px] flex justify-center items-center cursor-pointer" @click="triggerFileInput" @dragover.prevent="handleDragOver" @drop.prevent="handleDrop">
+                        <div class="w-full h-[320px] p-[4px] border-[1px] rounded-[6px] flex justify-center items-center cursor-pointer" @click="triggerFileInput" @dragover.prevent="handleDragOver" @drop.prevent="handleDrop">
                             <div v-if="!selectedImage" class="flex flex-col gap-[10px] justify-center items-center text-center text-second">
                                 <span class="text-[18px]">Resim seçin veya sürükleyip bırakın</span>
                                 <font-awesome-icon icon="fa-solid fa-upload" size="xl" />
                             </div>
-                            <div v-else class="w-full h-full rounded-[6px] overflow-hidden">
-                                <img :src="selectedImage" alt="Selected Image" class="w-full h-full object-cover">
+                            <div v-else class="w-full h-full flex justify-center items-center rounded-[6px] overflow-hidden">
+                                <img :src="selectedImage" alt="Selected Image" class="w-full max-w-[240px] h-full object-cover">
                             </div>
                         </div>
                     </div>

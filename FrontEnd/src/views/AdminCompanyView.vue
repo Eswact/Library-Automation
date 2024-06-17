@@ -2,6 +2,7 @@
     import AjaxScripts from '@/scripts/ajaxScripts';
     import { ref, onMounted } from 'vue';
     import { getImageFromUploads } from '@/scripts/common.js';
+    import { toast } from 'vue3-toastify';
 
     const banners = ref([]);
     const contactData = ref({});

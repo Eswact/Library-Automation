@@ -126,7 +126,7 @@
             <div class="w-full">
                 <h3 class="text-[26px] pl-[12px]">Son Eklenen Kitaplar</h3>
                 <hr>
-                <div class="w-full flex items-center gap-[20px] p-[20px]">
+                <div class="w-full flex items-center gap-[20px] p-[20px] flex-wrap md:justify-center md:items-center">
                     <div v-for="book in latestBooks" :key="book._id" >
                         <div v-if="book.isBorrowed" class="relative dark:bg-[rgba(155,155,155,0.55)] w-[220px] h-[270px] p-[16px] border-[2px] border-[rgba(155,155,155,0.75)] rounded-[12px] shadow-md shadow-[rgba(155,155,155,0.55)] flex flex-col justify-center items-center gap-[8px]">
                             <div class="absolute top-[4px] w-full px-[12px] flex justify-between items-center text-[14px] font-semibold">

@@ -24,7 +24,7 @@ const rentBook = async () => {
     };
     console.log(data);
     let onSuccess = (res) => {
-      toast("Kitapkiralama isteği gönderildi.", { autoClose: 3000, type: "success", position: "bottom-right" });
+      toast("Kitap kiralama isteği gönderildi.", { autoClose: 3000, type: "success", position: "bottom-right" });
     };
     let onError = (err) => {
       console.log(err);
@@ -110,6 +110,12 @@ onMounted(() => {
   if (router.currentRoute.value.params.bookId) {
     getBookDetail(router.currentRoute.value.params.bookId);
   }
+  watch(
+    () => router.currentRoute.value.params.bookId,
+    () => {
+      getBookDetail(router.currentRoute.value.params.bookId);
+    }
+  );
 });
 </script>
 
@@ -211,7 +217,7 @@ onMounted(() => {
                 book.name
               }}</span>
               <button
-                @click="getDetailsPage(router, book.id)"
+                @click="getDetailsPage(router, book._id)"
                 class="gelatine text-[17px] border-1 border-second bg-second text-white p-[6px] rounded-[10px] shadow shadow-second-shadow"
               >
                 Detaylar

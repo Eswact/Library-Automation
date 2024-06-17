@@ -120,7 +120,7 @@
             <div class="w-full flex flex-col items-center justify-center gap-[10px] px-[20px]">
                 <h1 class="text-[20px] text-main dark:text-white w-full">Kiralanmış Kitaplar</h1>
                 <hr class="w-full mb-[12px]">
-                <div v-if="borrowedBooks"  class="containImageSelector flex flex-col items-center gap-[10px] px-[10%] md:px-[20px] py-[10px] w-full">
+                <div v-if="borrowedBooks != ''"  class="flex flex-col items-center gap-[10px] px-[10%] md:px-[20px] py-[10px] w-full">
                     <div v-for="borrowedBook in borrowedBooks" :key="borrowedBooks._id" class="w-full flex items-center justify-between relative text-[18px] text-center px-[18px] py-[6px] bg-main-shadow border-[2px] rounded-[8px] border-main">
                         <div class="dark:text-white text-[16px] flex flex-col gap-[4px] justify-start items-start">
                             <span class="text-[17px] font-bold text-main dark:text-second flex gap-[10px]"><span class="w-[120px] text-start">Başlangıç Tarihi:</span> <span class="semibold text-[16px] text-black dark:text-white">{{ borrowedBook.rentStart }}</span></span>
@@ -132,13 +132,16 @@
                         </div>
                     </div>
                 </div>
+                <div class="flex flex-col items-center gap-[10px] px-[10%] md:px-[20px] py-[10px] w-full dark:text-white text-[20px]" v-else>
+                    Kiralanmış Kitap bulunmuyor.
+                </div>
             </div>
         </div>
         <div data-number="2" class="settingsContent w-full flex-col gap-[20px]">
             <div class="w-full flex flex-col items-center justify-center gap-[10px] px-[20px]">
                 <h1 class="text-[20px] w-full text-main dark:text-white">Kiralama İstekleri</h1>
                 <hr class="mb-[10px] w-full">
-                <div v-if="requests"  class="containImageSelector flex flex-col items-center gap-[10px] px-[10%] md:px-[20px] py-[10px] w-full">
+                <div v-if="requests != ''"  class="flex flex-col items-center gap-[10px] px-[10%] md:px-[20px] py-[10px] w-full">
                     <div v-for="request in requests" :key="request._id" class="w-full flex items-center justify-between relative text-[18px] text-center px-[18px] py-[6px] bg-main-shadow border-[2px] rounded-[8px] border-main">
                         <div class="dark:text-white text-[16px]">
                             <span><span class="text-[20px] font-bold text-second">{{ users.find(x => x._id == request.userId).username }}</span> kullanıcısı <span class="text-[20px] font-bold text-second">{{ books.find(x => x._id == request.bookId).name }}</span> kitabını kiralamak istiyor.</span>
@@ -148,6 +151,9 @@
                             <button class="px-[6px] text-white bg-red-600 border-red-400 shadow-sm shadow-red-400 rounded-[8px]" @click="rejectRequest(request._id)"><font-awesome-icon icon="fa-solid fa-xmark" /></button>
                         </div>
                     </div>
+                </div>
+                <div class="flex flex-col items-center gap-[10px] px-[10%] md:px-[20px] py-[10px] w-full dark:text-white text-[20px]" v-else>
+                    Kiralama isteği bulunmuyor.
                 </div>
             </div>
         </div>
