@@ -116,7 +116,14 @@ const registerUser = async () => {
   if (!validateEmail(mail)) return toast('Geçerli bir e-mail adresi giriniz.', { autoClose: 3000, type: "error", position: "bottom-right" });
   try {
     const response = await axios.post('http://localhost:3000/api/users/register', {username: username, mail: mail, password: password});
-    if (response.status == 200) toast('Kayıt Başarılı! Hoşgeldin ' + response.data.username, { autoClose: 3000, type: "success", position: "bottom-right" });
+    if (response.status == 200) {
+      toast('Kayıt Başarılı! Hoşgeldin ' + response.data.username, { autoClose: 3000, type: "success", position: "bottom-right" });
+      axios.post('http://localhost:3000/api/users/login', {username: username, password: password}).then(res => {
+        const token = res.data;
+        setlocalstorage('user', token);
+        loginControl();
+      });
+    }
     else toast(`${response.message}`, { autoClose: 3000, type: "error", position: "bottom-right" });
     closeForm();
   } catch (error) {
@@ -169,8 +176,8 @@ document.addEventListener('keyup', function(e) {
         <ul v-if="isAdminPage"  class="navbar flex gap-[36px] lg:gap-[12px] text-text dark:text-white pt-[6px] md:text-[28px] md:px-[40px] sm:hidden">
           <li :class="{ 'active': $route.path === '/admin' }"><RouterLink class="flex flex-col w-[100%] justify-center items-center" to="/admin"><div class="px-[10px] flex items-center justify-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-house" class="pb-[2px]"/><span class="md:hidden">Panel</span></div><hr class="w-0 ease-in-out duration-300 border-text dark:border-white md:hidden"></RouterLink></li>
           <li :class="{ 'active': $route.path === '/admin/books' }"><RouterLink class="flex flex-col w-[100%] justify-center items-center" to="/admin/books"><div class="px-[10px] flex items-center justify-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-book"/><span class="md:hidden">Kitaplar</span></div><hr class="w-0 ease-in-out duration-300 border-text dark:border-white md:hidden"></RouterLink></li>
-          <li :class="{ 'active': $route.path === '/admin/company' }"><RouterLink class="flex flex-col w-[100%] justify-center items-center" to="/admin/company"><div class="px-[10px] flex items-center justify-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-circle-info"/><span class="md:hidden">Kütüphane</span></div><hr class="w-0 ease-in-out duration-300 border-text dark:border-white md:hidden"></RouterLink></li>
-          <li :class="{ 'active': $route.path === '/admin/users' }"><RouterLink class="flex flex-col w-[100%] justify-center items-center" to="/admin/users"><div class="px-[10px] flex items-center justify-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-user-pen" /><span class="md:hidden">Kullanıcılar</span></div><hr class="w-0 ease-in-out duration-300 border-text dark:border-white md:hidden"></RouterLink></li>
+          <li :class="{ 'active': $route.path === '/admin/company' , 'hidden': userRole === 1}"><RouterLink class="flex flex-col w-[100%] justify-center items-center" to="/admin/company"><div class="px-[10px] flex items-center justify-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-circle-info"/><span class="md:hidden">Kütüphane</span></div><hr class="w-0 ease-in-out duration-300 border-text dark:border-white md:hidden"></RouterLink></li>
+          <li :class="{ 'active': $route.path === '/admin/users', 'hidden': userRole === 1 }"><RouterLink class="flex flex-col w-[100%] justify-center items-center" to="/admin/users"><div class="px-[10px] flex items-center justify-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-user-pen" /><span class="md:hidden">Kullanıcılar</span></div><hr class="w-0 ease-in-out duration-300 border-text dark:border-white md:hidden"></RouterLink></li>
         </ul>
         <ul v-else  class="navbar flex gap-[36px] lg:gap-[12px] text-text dark:text-white pt-[6px] md:text-[28px] md:px-[40px] sm:hidden">
           <li @click.native="updateAdminPageStatus('/')" :class="{ 'active': $route.path === '/' }"><RouterLink class="flex flex-col w-[100%] justify-center items-center" to="/"><div class="px-[10px] flex items-center justify-center gap-[8px]"><font-awesome-icon icon="fa-solid fa-house" class="pb-[2px]"/><span class="md:hidden">Anasayfa</span></div><hr class="w-0 ease-in-out duration-300 border-text dark:border-white md:hidden"></RouterLink></li>
@@ -193,7 +200,7 @@ document.addEventListener('keyup', function(e) {
           <font-awesome-icon class="text-dark-blue dark:text-second absolute right-[52px] top-[-15px]" :icon="['fas', 'caret-up']" size="lg" />
           <div class="bg-white w-full h-full rounded-md border-[2px] border-dark-blue dark:border-second">
             <ul class="w-full h-full flex flex-col items-center justify-center">
-              <li v-if="userRole == 0" class="w-full cursor-pointer h-[40px] border-b-[1px] border-dark-blue dark:border-second hover:bg-dark-blue dark:hover:bg-second" ><RouterLink class="h-full w-full p-[4px] flex items-center justify-center text-[18px] font-semibold text-dark-blue dark:text-second hover:text-white dark:hover:text-white" to="/admin">Yönetici Paneli</RouterLink></li>
+              <li v-if="userRole == 0 || userRole == 1" class="w-full cursor-pointer h-[40px] border-b-[1px] border-dark-blue dark:border-second hover:bg-dark-blue dark:hover:bg-second" ><RouterLink class="h-full w-full p-[4px] flex items-center justify-center text-[18px] font-semibold text-dark-blue dark:text-second hover:text-white dark:hover:text-white" to="/admin">Yönetici Paneli</RouterLink></li>
               <li @click="logout()" class="w-full cursor-pointer p-[4px] h-[40px] flex items-center justify-center text-[18px] font-semibold text-dark-blue dark:text-second hover:bg-dark-blue hover:text-white dark:hover:bg-second dark:hover:text-white">Çıkış</li>
             </ul>
           </div>

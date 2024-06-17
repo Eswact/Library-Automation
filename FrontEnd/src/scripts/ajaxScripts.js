@@ -35,7 +35,6 @@ const AjaxScripts = {
     postData("home/banners/create", data, onSuccess, onError);
   },
   DeleteBanner: function ({ data, onSuccess, onError }) {
-    console.log(data);
     postData(`home/banners/delete/${data}`, null, onSuccess, onError);
   },
   UpdateCompanyInfos: function ({ data, onSuccess, onError }) {
@@ -72,11 +71,19 @@ const AjaxScripts = {
     postData("books/create", data, onSuccess, onError);
   },
   UpdateBook: function ({ params, data, onSuccess, onError }) {
-    console.log(params);
     postData(`books/update/${params.id}`, data, onSuccess, onError);
   },
   DeleteBook: function ({ data, onSuccess, onError }) {
     postData(`books/delete/${data}`, null, onSuccess, onError);
+  },
+  GetUserList: function ({ onSuccess, onError }) {
+    fetchData("users/published", onSuccess, onError);
+  },
+  CreateUser: function ({ data, onSuccess, onError }) {
+    postData(`users/registerAdmin`, data, onSuccess, onError);
+  },
+  DeleteUser: function ({ data, onSuccess, onError }) {
+    postData(`users/delete/${data}`, null, onSuccess, onError);
   },
 };
 
