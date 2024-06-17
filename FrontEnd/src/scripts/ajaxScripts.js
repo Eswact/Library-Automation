@@ -85,6 +85,24 @@ const AjaxScripts = {
   DeleteUser: function ({ data, onSuccess, onError }) {
     postData(`users/delete/${data}`, null, onSuccess, onError);
   },
+  RentBookRequest: function ({ data, onSuccess, onError }) {
+    postData("books/createRequest", data, onSuccess, onError);
+  },
+  GetRequests: function ({ onSuccess, onError }) {
+    fetchData("books/requests", onSuccess, onError);
+  },
+  AcceptRequest: function ({ data, onSuccess, onError }) {
+    postData(`books/acceptRequest/${data}`, null, onSuccess, onError);
+  },
+  RejectRequest: function ({ data, onSuccess, onError }) {
+    postData(`books/rejectRequest/${data}`, null, onSuccess, onError);
+  },
+  GetBorrowed: function ({ onSuccess, onError }) {
+    fetchData("books/borrowedBooks", onSuccess, onError);
+  },
+  EndBorrow: function ({ data, onSuccess, onError }) {
+    postData(`books/endBorrow/${data}`, null, onSuccess, onError);
+  },
 };
 
 export default AjaxScripts;

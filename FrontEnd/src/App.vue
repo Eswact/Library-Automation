@@ -83,6 +83,7 @@ const loginControl = async () => {
   if (getlocalstorage('user') != '') {
     const token = getlocalstorage('user');
     const decodedToken = VueJwtDecode.decode(token);
+    console.log(decodedToken);
     userRole.value = decodedToken.role;
     isLogin.value = true;
   }

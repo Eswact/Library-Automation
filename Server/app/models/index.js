@@ -13,5 +13,7 @@ db.banners = require("./banner-model.js")(mongoose);
 db.writers = require("./writer-model.js")(mongoose);
 db.publishers = require("./publisher-model.js")(mongoose);
 db.company = require("./company-model.js")(mongoose);
+db.rentRequests = require("./rent-request-model.js")(mongoose);
+db.borrowedBooks = require("./borrowed-books-model.js")(mongoose);
 
 module.exports = db;

@@ -2,7 +2,10 @@
 import { ref, onMounted, nextTick, watch } from "vue";
 import AjaxScripts from "../scripts/ajaxScripts.js";
 import { useRouter } from "vue-router";
-import { getImageFromUploads, getDetailsPage } from "../scripts/common.js";
+import { getImageFromUploads, getDetailsPage, getlocalstorage } from "../scripts/common.js";
+import VueJwtDecode from 'vue-jwt-decode';
+import { toast } from 'vue3-toastify';
+
 const router = useRouter();
 const bookDetail = ref(null);
 const books = ref([]);
@@ -10,6 +13,37 @@ const categoryId = ref(null);
 const category = ref(null);
 const writer = ref(null);
 const publisher = ref(null);
+
+const rentBook = async () => { 
+  if (getlocalstorage('user') != '') {
+    const token = getlocalstorage('user');
+    const decodedToken = VueJwtDecode.decode(token);
+    let data = {
+      bookId: bookDetail.value._id,
+      userId: decodedToken.id,
+    };
+    console.log(data);
+    let onSuccess = (res) => {
+      toast("Kitapkiralama isteği gönderildi.", { autoClose: 3000, type: "success", position: "bottom-right" });
+    };
+    let onError = (err) => {
+      console.log(err);
+      toast( err.response.data.message || "Kitap kiralama isteği gönderilirken bir hata oluştu.", { autoClose: 3000, type: "error", position: "bottom-right" });
+    };
+    AjaxScripts.RentBookRequest({ data, onSuccess, onError });
+  }
+  else {
+    toast("Öncelikle giriş yapmanız gerekli.", { autoClose: 3000, type: "error", position: "bottom-right" });
+    openForm();
+  }
+};
+const openForm = () => {
+  document.getElementById('sign-form').classList.add('open');
+  document.querySelectorAll('#sign-form input').forEach(input => {
+    input.value = '';
+  });
+  document.querySelector('.sign-button:first-child').click();
+};
 
 function getWriter() {
   let onSuccess = (res) => {
@@ -141,7 +175,7 @@ onMounted(() => {
         <!-- rent -->
         <div class="flex items-center gap-[16px]">
           <button
-            @click="rentBook(userId, bookId)"
+            @click="rentBook(bookDetail._id)"
             class="w-[244px] p-[12px] rounded-[10px] border-[1px] border-[#00823cbf] text-[18px] text-[#00823cbf] dark:bg-[#00823cbf] dark:text-white shadow-md shadow-[#00823c57] font-medium hover:bg-[#00823cbf] hover:text-white dark:hover:bg-[white] dark:hover:text-[#00823cbf] transition-all"
           >
             Kiralamak istiyorum
