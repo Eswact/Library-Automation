@@ -44,7 +44,7 @@
 <template>
     <div class="w-full p-[20px] flex md:flex-col md:gap-[20px] items-center justify-center">
         <div class="w-[50%] md:w-full h-[720px] md:h-[auto] p-[20px] md:p-0 flex items-center justify-center">
-            <a href="#" target="_blank" class="w-full border-[1px] rounded-[12px] overflow-hidden flex justify-center items-center">
+            <a :href=contact.link target="_blank" class="w-full border-[1px] rounded-[12px] overflow-hidden flex justify-center items-center">
                 <img class="w-full h-full" :src="getImageFromUploads(`company/${contact.img}`)" alt="adres"/>
             </a>
         </div>
