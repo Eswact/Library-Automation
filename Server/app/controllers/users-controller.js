@@ -1,6 +1,36 @@
 const db = require("../models");
 const users = db.users;
 const jwt = require('../services/auth-service');
+const nodemailer = require('nodemailer');
+
+function generateRandomPassword(length) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let password = '';
+  for (let i = 0; i < length; i++) {
+    password += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  console.log(password);
+  return password;
+}
+
+async function sendPasswordEmail(email, password) {
+  const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+      user: 'renterensmurf@gmail.com',
+      pass: 'utgwplwftqgzoejt'
+    }
+  });
+
+  const mailOptions = {
+    from: 'renterensmurf@gmail.com',
+    to: email,
+    subject: 'Hesabınız Oluşturuldu!',
+    text: `Hesabınız oluşturuldu. Hesabınızın şifresi: ${password}`
+  };
+
+  await transporter.sendMail(mailOptions);
+}
 
 // Get all users from the database.
 const findAll = async (req, res) => {
@@ -64,9 +94,11 @@ const registerAdmin = async (req, res) => {
   console.log(thisUser);
   if (thisUser != null) { return res.status(404).send({ message: "Username or e-mail is used." }); }
   try {
+    let newPassword = generateRandomPassword(6);
+    sendPasswordEmail(req.body.mail, newPassword)
     const user = new users({
       username: req.body.username,
-      password: req.body.password,
+      password: newPassword,
       role: req.body.role,
       mail: req.body.mail
     });

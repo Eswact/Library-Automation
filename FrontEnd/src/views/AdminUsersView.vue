@@ -83,7 +83,6 @@ const saveUser = () => {
         username: document.getElementById('userName').value, 
         mail: document.getElementById('userMail').value, 
         role: document.getElementById('userRole').value, 
-        password: document.getElementById('userPassword').value
     };
     let onSuccess = (res) => {
         toast("Kullanıcı eklendi.", { autoClose: 3000, type: "success", position: "bottom-right" });
@@ -149,7 +148,6 @@ onMounted(() => {
                         <option value="1">Personel</option>
                         <option value="2">Kullanıcı</option>
                     </select>
-                    <input type="text" id="userPassword" placeholder="Şifre" class="formInputs requiredInputs border-[1px] rounded-[6px] px-[12px] py-[4px]" required>
                     <div class="flex justify-center items-center">
                         <button type="button" @click="saveUser" class="bg-second w-[120px] p-[4px] text-[17px] text-white rounded-[10px]">Kaydet</button>
                     </div>
