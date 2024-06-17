@@ -9,6 +9,7 @@
     const writers = ref([]);
     const categories = ref([]);
     const publishers = ref([]);
+    const qrCodeUrl = ref('');
 
     // Handle Image
     const selectedImage = ref(null);
@@ -45,6 +46,31 @@
             selectedImage.value = e.target.result;
         };
         reader.readAsDataURL(file);
+    };
+
+    // QR Code Modal
+    const openQrCodeModal = (type, id) => {
+        if (type == 1) {
+            qrCodeUrl.value = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${window.location.origin}/detail/${id}`;
+        }
+        if (type == 2) {
+            qrCodeUrl.value = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${window.location.origin}/books?category=${id}`;
+        }
+        document.getElementById('qrModal').classList.add('open');
+    };
+    const closeQrCodeModal = (type, id) => {
+        document.getElementById('qrModal').classList.remove('open');
+    };
+    function printQRCode() {
+        const printWindow = window.open('', '', 'width=600,height=400');
+        printWindow.document.write(`<img src="${qrCodeUrl.value}" alt="QR Code">`);
+        printWindow.document.close();
+
+        // İçerik tamamen yüklendikten sonra yazdırma işlemini başlat
+        printWindow.onload = function() {
+            printWindow.print();
+            printWindow.close();
+        };
     };
 
     // Fetch Datas
@@ -331,6 +357,7 @@
                         getCategories();
                         toast("Kategori Düzenlendi.", { autoClose: 3000, type: "success", position: "bottom-right" });
                         closeCategoryModal();
+                        openQrCodeModal(2, res.catId);
                     };
                     let onError2 = (err) => {
                         toast("Kategori Düzenlenirken Hata", { autoClose: 3000, type: "error", position: "bottom-right" });
@@ -347,6 +374,7 @@
                         getCategories();
                         toast("Kategori Düzenlendi.", { autoClose: 3000, type: "success", position: "bottom-right" });
                         closeCategoryModal();
+                        openQrCodeModal(2, res.catId);
                     };
                     let onError = (err) => {
                         toast("Kategori Düzenlenirken Hata", { autoClose: 3000, type: "error", position: "bottom-right" });
@@ -381,6 +409,7 @@
                     getCategories();
                     toast("Yeni Kategori Eklendi.", { autoClose: 3000, type: "success", position: "bottom-right" });
                     closeCategoryModal();
+                    openQrCodeModal(2, res.catId);
                 };
                 let onError2 = (err) => {
                     toast("Kategori Eklenirken Hata", { autoClose: 3000, type: "error", position: "bottom-right" });
@@ -466,6 +495,7 @@
                         getBooks();
                         toast("Kitap Düzenlendi.", { autoClose: 3000, type: "success", position: "bottom-right" });
                         closeBookModal();
+                        openQrCodeModal(1, res._id);
                     };
                     let onError2 = (err) => {
                         toast("Kitap Düzenlenirken Hata", { autoClose: 3000, type: "error", position: "bottom-right" });
@@ -487,6 +517,7 @@
                         getBooks();
                         toast("Kitap Düzenlendi.", { autoClose: 3000, type: "success", position: "bottom-right" });
                         closeBookModal();
+                        openQrCodeModal(1, res._id);
                     };
                     let onError = (err) => {
                         toast("Kitap Düzenlenirken Hata", { autoClose: 3000, type: "error", position: "bottom-right" });
@@ -526,6 +557,7 @@
                     getBooks();
                     toast("Yeni Kitap Eklendi.", { autoClose: 3000, type: "success", position: "bottom-right" });
                     closeBookModal();
+                    openQrCodeModal(1, res._id);
                 };
                 let onError2 = (err) => {
                     toast("Kitap Eklenirken Hata", { autoClose: 3000, type: "error", position: "bottom-right" });
@@ -763,6 +795,20 @@
                 </form>
             </div>
         </div>
+
+        <!-- QR Modal -->
+        <div id="qrModal" class="z-20 fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.8)] justify-center items-center dark:text-black">
+            <div class="bg-white w-[400px] rounded-[10px] relative border-[1px] border-main-shadow shadow-lg shadow-main-shadow max-w-[95%]">
+                <div class="justify-between items-center px-[16px] py-[10px] border-b-[1px] shadow-md border-main-shadow">
+                    <h1 class="text-[20px] text-main font-[600]">Qr Kodu</h1>
+                    <button class="absolute top-[-11px] right-[-13px] text-second" @click="closeQrCodeModal"><font-awesome-icon :icon="['fas', 'circle-xmark']" size="2xl" class="bg-white rounded-[50%] shadow-lg shadow-second-shadow"/></button>
+                </div>
+                <div class="flex flex-col gap-[10px] p-[10px]">
+                    <img :src="qrCodeUrl" alt="QR Code">
+                    <button class="bg-second w-full p-[4px] text-[17px] text-white rounded-[10px]" @click="printQRCode">Yazdır</button>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -796,10 +842,10 @@
         background-color: #EEC681;
         color: white;
     }
-    #writerModal, #publisherModal, #categoryModal, #bookModal {
+    #writerModal, #publisherModal, #categoryModal, #bookModal, #qrModal {
         display: none;
     }
-    #writerModal.open, #publisherModal.open, #categoryModal.open, #bookModal.open {
+    #writerModal.open, #publisherModal.open, #categoryModal.open, #bookModal.open, #qrModal.open {
         display: flex;
     }
 </style>
