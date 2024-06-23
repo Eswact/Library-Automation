@@ -618,7 +618,7 @@
             <div class="w-full flex flex-col items-center justify-center gap-[10px] px-[20px]">
                 <h1 class="text-[20px] text-main dark:text-white w-full">Kitaplar</h1>
                 <hr class="w-full mb-[12px]">
-                <div class="flex flex-wrap items-center w-full gap-[20px]">
+                <div class="flex flex-wrap justify-center items-center w-full gap-[20px]">
                     <div v-for="book in books" :key="book._id" >
                         <div class="relative dark:bg-main-shadow cursor-pointer w-[210px] h-[240px] p-[10px] pt-[24px] border-[2px] border-main rounded-[12px] shadow-md shadow-main-shadow flex flex-col justify-center items-center gap-[12px]">
                             <div class="absolute top-[3px] w-full px-[6px] flex justify-between items-center text-[14px] font-semibold">

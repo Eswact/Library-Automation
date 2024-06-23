@@ -116,6 +116,13 @@
     applyFilters();
   }
 
+  function openFilter() {
+    document.querySelector('.bookFilters').classList.add('open');
+  }
+  function closeFilter() {
+    document.querySelector('.bookFilters').classList.remove('open');
+  }
+
   onMounted(() => {
     const catIdFromQuery = router.currentRoute.value.query.category;
     if (catIdFromQuery) {
@@ -151,7 +158,8 @@
 
 <template>
     <div class="w-full px-[20px] flex">
-        <div class="fixed flex flex-col gap-[12px] items-center justify-start w-[235px] pt-[24px] pb-[34px] border-[1px] border-black dark:border-white shadow-md dark:shadow-lg dark:shadow-[rgba(225,225,225,0.55)] rounded-[10px] px-[18px] md:hidden">
+        <div class="bookFilters fixed flex flex-col gap-[12px] items-center justify-start w-[235px] pt-[24px] pb-[34px] border-[1px] border-black dark:border-white shadow-md dark:shadow-lg dark:shadow-[rgba(225,225,225,0.55)] rounded-[10px] px-[18px] md:hidden md:absolute md:w-full md:h-full md:p-[40px] md:rounded-none md:text-black md:justify-center md:z-20 md:top-0 md:left-0 md:bg-white">
+            <button class="absolute top-[4px] right-[4px] text-red-600 hidden md:block" @click="closeFilter()"><font-awesome-icon :icon="['fas', 'circle-xmark']" size="2xl" class="bg-white rounded-[50%]"/></button>
             <button @click="clearFilter()" class="w-full px-[12px] py-[6px] border-[1px] border-second-shadow bg-second text-white text-[18px] font-semibold shadow-md shadow-second-shadow rounded-[8px] mb-[12px]">Temizle</button>
             <div class="w-full flex flex-col px-[12px] pt-[8px] pb-[12px] items-center justify-center border-[1px] border-[#ddd] rounded-[6px] gap-[8px]">
                 <label for="searchBook" class="text-[18px] font-semibold">Kitap</label>
@@ -183,7 +191,8 @@
                 <label for="canRent" class="text-[18px] font-semibold">Kiralanabilir</label>
             </div>
         </div>
-        <div class="w-full pl-[250px] pr-[10px] md:pl-[10px] flex items-center gap-[20px] flex-wrap">
+        <div class="w-full pl-[250px] pr-[10px] md:pl-[10px] md:justify-center flex items-center gap-[20px] flex-wrap">
+            <button class="hidden w-full md:block px-[12px] py-[6px] border-[1px] border-second-shadow bg-second text-white text-[18px] font-semibold shadow-md shadow-second-shadow rounded-[8px]" @click="openFilter()">Filtrele</button>
             <div v-for="book in books" :key="book._id" >
                 <div v-if="book.isBorrowed" class="relative dark:bg-[rgba(155,155,155,0.55)] w-[220px] h-[270px] p-[16px] border-[2px] border-[rgba(155,155,155,0.75)] rounded-[12px] shadow-md shadow-[rgba(155,155,155,0.55)] flex flex-col justify-center items-center gap-[8px]">
                     <div class="absolute top-[4px] w-full px-[12px] flex justify-between items-center text-[14px] font-semibold">
@@ -207,3 +216,9 @@
         </div>
     </div>
 </template>
+
+<style scoped>
+  .bookFilters.open {
+    display: flex;
+  }
+</style>
