@@ -7,7 +7,8 @@ module.exports = mongoose => {
           bookId: String,
           state: Boolean,
           rentStart: Date,
-          rentEnd: Date
+          rentEnd: Date,
+          plannedEnd: Date
         },
         { timestamps: true }
       )

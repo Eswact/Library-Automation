@@ -92,7 +92,7 @@ const AjaxScripts = {
     fetchData("books/requests", onSuccess, onError);
   },
   AcceptRequest: function ({ data, onSuccess, onError }) {
-    postData(`books/acceptRequest/${data}`, null, onSuccess, onError);
+    postData(`books/acceptRequest`, data, onSuccess, onError);
   },
   RejectRequest: function ({ data, onSuccess, onError }) {
     postData(`books/rejectRequest/${data}`, null, onSuccess, onError);

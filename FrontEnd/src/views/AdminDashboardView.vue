@@ -48,17 +48,32 @@
         AjaxScripts.GetBooks({ onSuccess, onError });
     }
     function acceptRequest(id) {
-        let data = id;
-        let onSuccess = (res) => {
-            toast("İstek kabul edildi.", { autoClose: 3000, type: "success", position: "bottom-right" });
-            getRequests();
-            getBorrowedBooks();
+        document.getElementById('endDate').value = '';
+        document.getElementById('endDateModal').classList.add('open');
+        document.getElementById('acceptReqBut').onclick = null;
+        document.getElementById('acceptReqBut').onclick = function() {
+            if (document.getElementById('endDate').value != '' && new Date(document.getElementById('endDate').value) < new Date()) {
+                toast("Geçmiş bir tarih seçemezsiniz.", { autoClose: 3000, type: "error", position: "bottom-right" });
+                return;
+            }
+            else {
+                let data = {
+                    id: id,
+                    plannedEnd: (document.getElementById('endDate').value != '') ? document.getElementById('endDate').value : null
+                };
+                let onSuccess = (res) => {
+                    toast("İstek kabul edildi.", { autoClose: 3000, type: "success", position: "bottom-right" });
+                    getRequests();
+                    getBorrowedBooks();
+                    document.getElementById('endDateModal').classList.remove('open');
+                };
+                let onError = (err) => {
+                    toast("İstek kabul edilirken hata", { autoClose: 3000, type: "error", position: "bottom-right" });
+                    console.log(err);
+                };
+                AjaxScripts.AcceptRequest({ data, onSuccess, onError });
+            }
         };
-        let onError = (err) => {
-            toast("İstek kabul edilirken hata", { autoClose: 3000, type: "error", position: "bottom-right" });
-            console.log(err);
-        };
-        AjaxScripts.AcceptRequest({ data, onSuccess, onError });
     }
     function rejectRequest(id) {
         let data = id;
@@ -121,9 +136,11 @@
                 <h1 class="text-[20px] text-main dark:text-white w-full">Kiralanmış Kitaplar</h1>
                 <hr class="w-full mb-[12px]">
                 <div v-if="borrowedBooks != ''"  class="flex flex-col items-center gap-[10px] px-[10%] md:px-[20px] py-[10px] w-full">
-                    <div v-for="borrowedBook in borrowedBooks" :key="borrowedBooks._id" class="w-full flex items-center justify-between relative text-[18px] text-center px-[18px] py-[6px] bg-main-shadow border-[2px] rounded-[8px] border-main">
+                    <div v-for="borrowedBook in borrowedBooks" :key="borrowedBooks._id" 
+                    :class="{'border-red-600': borrowedBook.plannedEnd && new Date(borrowedBook.plannedEnd) < new Date(), 'w-full flex items-center justify-between relative text-[18px] text-center px-[18px] py-[6px] bg-main-shadow border-[2px] rounded-[8px] border-main': true}">
                         <div class="dark:text-white text-[16px] flex flex-col gap-[4px] justify-start items-start">
                             <span class="text-[17px] font-bold text-main dark:text-second flex gap-[10px]"><span class="w-[120px] text-start">Başlangıç Tarihi:</span> <span class="semibold text-[16px] text-black dark:text-white">{{ borrowedBook.rentStart }}</span></span>
+                            <span v-if="borrowedBook.plannedEnd"  class="text-[17px] font-bold text-main dark:text-second flex gap-[10px]"><span class="w-[120px] text-start">Planlanmış Bitiş:</span> <span class="semibold text-[16px] text-black dark:text-white">{{ borrowedBook.plannedEnd }}</span></span>
                             <span class="text-[17px] font-bold text-main dark:text-second flex gap-[10px]"><span class="w-[120px] text-start">Kullanıcı:</span> <span class="semibold text-[16px] text-black dark:text-white">{{ users.find(x => x._id == borrowedBook.userId).username }}</span></span> 
                             <span class="text-[17px] font-bold text-main dark:text-second flex gap-[10px] justify-start items-start"><span class="w-[120px] text-start">Kitap:</span> <span class="semibold text-[16px] text-black dark:text-white">{{ books.find(x => x._id == borrowedBook.bookId).name }}</span></span>
                         </div>
@@ -154,6 +171,23 @@
                 </div>
                 <div class="flex flex-col items-center gap-[10px] px-[10%] md:px-[20px] py-[10px] w-full dark:text-white text-[20px]" v-else>
                     Kiralama isteği bulunmuyor.
+                </div>
+            </div>
+        </div>
+
+        <!-- end date modal -->
+        <div id="endDateModal" class="z-20 fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.8)] justify-center items-center dark:text-black">
+            <div class="bg-white w-[400px] rounded-[10px] relative border-[1px] border-main-shadow shadow-lg shadow-main-shadow max-w-[95%]">
+                <div class="flex flex-col gap-[10px] p-[10px]" method="POST">
+                    <div class="justify-between items-center px-[8px] py-[5px] border-b-[1px]">
+                        <h1 class="text-[18px] text-main font-[600]">Kabul İşlemi</h1>
+                        <button class="absolute top-[-11px] right-[-13px] text-second" @click="closeEndDateModal"><font-awesome-icon :icon="['fas', 'circle-xmark']" size="2xl" class="bg-white rounded-[50%] shadow-lg shadow-second-shadow"/></button>
+                    </div>
+                    <span class="text-[15px] text-black">Kitabın iade tarihi belirli ise aşağıdan seçim yapınız. İade tarihi belirli değil ise boş bırakılabilir.</span>
+                    <input type="date" id="endDate"  class="border-[1px] rounded-[6px] px-[12px] py-[4px]">
+                    <div class="flex justify-center items-center">
+                        <button id="acceptReqBut" class="bg-second w-[120px] p-[4px] text-[17px] text-white rounded-[10px]">Kabul et</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -189,5 +223,11 @@
     .dark .adminTabs span.selected {
         background-color: #EEC681;
         color: white;
+    }
+    #endDateModal {
+        display: none;
+    }
+    #endDateModal.open {
+        display: flex;
     }
 </style>

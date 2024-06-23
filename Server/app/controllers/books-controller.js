@@ -103,7 +103,8 @@ const createRequest = async (req, res) => {
 
 
 const acceptRequest = async (req, res) => {
-  const requestId = req.params.id;
+  const requestId = req.body.id;
+  const plannedReturnDate = req.body.plannedEnd;
   try {
     const request = await rentRequests.findById(requestId);
     if (!request) {
@@ -116,7 +117,8 @@ const acceptRequest = async (req, res) => {
       bookId: request.bookId,
       state: true,
       rentStart: new Date(),
-      rentEnd: null
+      rentEnd: null,
+      plannedEnd: plannedReturnDate
     });
     await newBorrowedBook.save();
 
