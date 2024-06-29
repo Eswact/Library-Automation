@@ -86,7 +86,7 @@
         return new Promise((resolve, reject) => {
             AjaxScripts.GetBooks({
                 onSuccess: (res) => {
-                    books.value = res;
+                    books.value = res.reverse();
                     resolve();
                 },
                 onError: (err) => {
@@ -100,7 +100,7 @@
         return new Promise((resolve, reject) => {
             AjaxScripts.GetWriters({
                 onSuccess: (res) => {
-                    writers.value = res;
+                    writers.value = res.reverse();
                     resolve();
                 },
                 onError: (err) => {
@@ -114,7 +114,7 @@
         return new Promise((resolve, reject) => {
             AjaxScripts.GetCategories({
                 onSuccess: (res) => {
-                    categories.value = res;
+                    categories.value = res.reverse();
                     resolve();
                 },
                 onError: (err) => {
@@ -128,7 +128,7 @@
         return new Promise((resolve, reject) => {
             AjaxScripts.GetPublishers({
                 onSuccess: (res) => {
-                    publishers.value = res;
+                    publishers.value = res.reverse();
                     resolve();
                 },
                 onError: (err) => {
@@ -619,6 +619,13 @@
                 <h1 class="text-[20px] text-main dark:text-white w-full">Kitaplar</h1>
                 <hr class="w-full mb-[12px]">
                 <div class="flex flex-wrap justify-center items-center w-full gap-[20px]">
+                    <div @click="openBookModal()">
+                        <div class="relative dark:bg-main-shadow cursor-pointer w-[200px] h-[250px] p-[10px] border-[2px] border-main rounded-[12px] shadow-md shadow-main-shadow flex flex-col justify-center items-center gap-[12px]">
+                            <div class="border-main border-[2px] rounded-[50%] text-main bg-white w-[50px] h-[50px] shadow-sm shadow-main flex justify-center items-center">
+                                <font-awesome-icon icon="fa-solid fa-plus" size="2xl"/>
+                            </div>
+                        </div>
+                    </div>
                     <div v-for="book in books" :key="book._id" >
                         <div class="relative dark:bg-main-shadow cursor-pointer w-[210px] h-[240px] p-[10px] pt-[24px] border-[2px] border-main rounded-[12px] shadow-md shadow-main-shadow flex flex-col justify-center items-center gap-[12px]">
                             <div class="absolute top-[3px] w-full px-[6px] flex justify-between items-center text-[14px] font-semibold">
@@ -629,13 +636,6 @@
                             <span :title=book.name class="text-[18px] font-semibold text-center truncate max-w-full">{{ book.name }}</span>
                         </div>
                     </div>
-                    <div @click="openBookModal()">
-                        <div class="relative dark:bg-main-shadow cursor-pointer w-[200px] h-[250px] p-[10px] border-[2px] border-main rounded-[12px] shadow-md shadow-main-shadow flex flex-col justify-center items-center gap-[12px]">
-                            <div class="border-main border-[2px] rounded-[50%] text-main bg-white w-[50px] h-[50px] shadow-sm shadow-main flex justify-center items-center">
-                                <font-awesome-icon icon="fa-solid fa-plus" size="2xl"/>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -644,15 +644,15 @@
                 <h1 class="text-[20px] text-main dark:text-white w-full">Yazar Listesi</h1>
                 <hr class="w-full mb-[12px]">
                 <div class="w-full flex flex-col gap-[10px]">
-                    <div v-for="writer in writers" :key="writer._id" class="w-full flex items-center justify-between relative text-[18px] text-center px-[18px] py-[6px] bg-main-shadow border-[2px] rounded-[8px] border-main">
-                        <button @click="openWriterModal(writer.writerId)" class="gelatine editItem py-[1px] px-[8px] text-white bg-second rounded-[10px]"><font-awesome-icon icon="fa-solid fa-pen" size="lg"/></button>
-                        <span>{{ writer.name }}</span>
-                        <button @click="deleteWriter(writer.writerId)" class="gelatine  py-[1px] px-[8px] text-white bg-red-600 rounded-[10px]"><font-awesome-icon icon="fa-solid fa-trash-can" size="lg"/></button>
-                    </div>
                     <div @click="openWriterModal()" class="cursor-pointer w-full flex items-center justify-center relative text-[18px] text-center px-[18px] py-[6px] bg-main-shadow border-[2px] rounded-[8px] border-main">
                         <div class="border-main border-[2px] rounded-[50%] text-main bg-white w-[30px] h-[30px] shadow-sm shadow-main flex justify-center items-center">
                             <font-awesome-icon icon="fa-solid fa-plus" size="lg"/>
                         </div>
+                    </div>
+                    <div v-for="writer in writers" :key="writer._id" class="w-full flex items-center justify-between relative text-[18px] text-center px-[18px] py-[6px] bg-main-shadow border-[2px] rounded-[8px] border-main">
+                        <button @click="openWriterModal(writer.writerId)" class="gelatine editItem py-[1px] px-[8px] text-white bg-second rounded-[10px]"><font-awesome-icon icon="fa-solid fa-pen" size="lg"/></button>
+                        <span>{{ writer.name }}</span>
+                        <button @click="deleteWriter(writer.writerId)" class="gelatine  py-[1px] px-[8px] text-white bg-red-600 rounded-[10px]"><font-awesome-icon icon="fa-solid fa-trash-can" size="lg"/></button>
                     </div>
                 </div>
             </div>
@@ -662,16 +662,16 @@
                 <h1 class="text-[20px] text-main dark:text-white w-full">Kategoriler</h1>
                 <hr class="w-full mb-[12px]">
                 <div class="flex items-center justify-center gap-[10px] flex-wrap p-[10px]">
+                    <div @click="openCategoryModal()" class="w-[360px] h-[120px] rounded-[10px] overflow-hidden border-[1px] border-main bg-main-shadow flex justify-center items-center cursor-pointer">
+                        <div class="border-main border-[2px] rounded-[50%] text-main bg-white w-[50px] h-[50px] shadow-sm shadow-main flex justify-center items-center">
+                            <font-awesome-icon icon="fa-solid fa-plus" size="2xl"/>
+                        </div>
+                    </div>
                     <div v-for="category in categories" :key="category._id" class="flex justify-center items-center itemCard w-[360px] h-[120px] rounded-[10px] overflow-hidden cursor-pointer relative">
                         <img :src="getImageFromUploads(`categories/${category.img}`)" :alt="category.title" class="w-full h-full object-cover">
                         <button @click="openCategoryModal(category.catId)" class="gelatine  absolute z-10 top-[4px] left-[4px] py-[4px] px-[10px] text-white bg-second rounded-[10px]"><font-awesome-icon icon="fa-solid fa-pen" size="lg"/></button>
                         <span class="absolute text-white text-[26px] font-[700] w-full h-full flex justify-center items-center p-[10px] bg-[rgba(0,0,0,0.2)] shadow-md shadow-[rgba(0,0,0,0.2)]">{{ category.name }}</span>
                         <button @click="deleteCategory(category.catId)" class="gelatine  absolute z-10 top-[4px] right-[4px] py-[4px] px-[10px] text-white bg-red-600 rounded-[10px]"><font-awesome-icon icon="fa-solid fa-trash-can" size="lg"/></button>
-                    </div>
-                    <div @click="openCategoryModal()" class="w-[360px] h-[120px] rounded-[10px] overflow-hidden border-[1px] border-main bg-main-shadow flex justify-center items-center cursor-pointer">
-                        <div class="border-main border-[2px] rounded-[50%] text-main bg-white w-[50px] h-[50px] shadow-sm shadow-main flex justify-center items-center">
-                            <font-awesome-icon icon="fa-solid fa-plus" size="2xl"/>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -681,15 +681,15 @@
                 <h1 class="text-[20px] text-main dark:text-white w-full">Yayınevi Listesi</h1>
                 <hr class="w-full mb-[12px]">
                 <div class="w-full flex flex-col gap-[10px]">
-                    <div v-for="publisher in publishers" :key="publisher._id" class="w-full flex items-center justify-between relative text-[18px] text-center px-[18px] py-[6px] bg-main-shadow border-[2px] rounded-[8px] border-main">
-                        <button @click="openPublisherModal(publisher.publisherId)" class="gelatine editItem py-[1px] px-[8px] text-white bg-second rounded-[10px]"><font-awesome-icon icon="fa-solid fa-pen" size="lg"/></button>
-                        <span>{{ publisher.name }}</span>
-                        <button @click="deletePublisher(publisher.publisherId)" class="gelatine  py-[1px] px-[8px] text-white bg-red-600 rounded-[10px]"><font-awesome-icon icon="fa-solid fa-trash-can" size="lg"/></button>
-                    </div>
                     <div @click="openPublisherModal()" class="cursor-pointer w-full flex items-center justify-center relative text-[18px] text-center px-[18px] py-[6px] bg-main-shadow border-[2px] rounded-[8px] border-main">
                         <div class="border-main border-[2px] rounded-[50%] text-main bg-white w-[30px] h-[30px] shadow-sm shadow-main flex justify-center items-center">
                             <font-awesome-icon icon="fa-solid fa-plus" size="lg"/>
                         </div>
+                    </div>
+                    <div v-for="publisher in publishers" :key="publisher._id" class="w-full flex items-center justify-between relative text-[18px] text-center px-[18px] py-[6px] bg-main-shadow border-[2px] rounded-[8px] border-main">
+                        <button @click="openPublisherModal(publisher.publisherId)" class="gelatine editItem py-[1px] px-[8px] text-white bg-second rounded-[10px]"><font-awesome-icon icon="fa-solid fa-pen" size="lg"/></button>
+                        <span>{{ publisher.name }}</span>
+                        <button @click="deletePublisher(publisher.publisherId)" class="gelatine  py-[1px] px-[8px] text-white bg-red-600 rounded-[10px]"><font-awesome-icon icon="fa-solid fa-trash-can" size="lg"/></button>
                     </div>
                 </div>
             </div>

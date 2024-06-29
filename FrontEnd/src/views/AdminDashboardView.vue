@@ -99,6 +99,9 @@
         };
         AjaxScripts.EndBorrow({ data, onSuccess, onError });
     }
+    function closeEndDateModal() {
+        document.getElementById('endDateModal').classList.remove('open');
+    }
 
     //Ready
     onMounted(() => {
