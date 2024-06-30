@@ -788,7 +788,8 @@
                             <option v-for="publisher in publishers" :key="publisher.publisherId" :value="publisher.publisherId" :data-name="publisher.name">{{ publisher.name }}</option>
                         </select>
                         <select id="ageRange" class="formSelects requiredSelects w-[49%] border-[1px] text-center p-[2px] rounded-[6px]" required>
-                            <option value="1" selected>Her Yaş</option>
+                            <option value=0 selected>Yaş Aralığı</option>
+                            <option value="1">Her Yaş</option>
                             <option value="2">Çocuk</option>
                             <option value="3">Yetişkin</option>
                         </select>

@@ -102,6 +102,14 @@
     function closeEndDateModal() {
         document.getElementById('endDateModal').classList.remove('open');
     }
+    function formatDate(isoDateString) {
+        const date = new Date(isoDateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+
+        return `${day}.${month}.${year}`;
+    }
 
     //Ready
     onMounted(() => {
@@ -142,8 +150,8 @@
                     <div v-for="borrowedBook in borrowedBooks" :key="borrowedBooks._id" 
                     :class="{'border-red-600': borrowedBook.plannedEnd && new Date(borrowedBook.plannedEnd) < new Date(), 'w-full flex items-center justify-between relative text-[18px] text-center px-[18px] py-[6px] bg-main-shadow border-[2px] rounded-[8px] border-main': true}">
                         <div class="dark:text-white text-[16px] flex flex-col gap-[4px] justify-start items-start">
-                            <span class="text-[17px] font-bold text-main dark:text-second flex gap-[10px]"><span class="w-[120px] text-start">Başlangıç Tarihi:</span> <span class="semibold text-[16px] text-black dark:text-white">{{ borrowedBook.rentStart }}</span></span>
-                            <span v-if="borrowedBook.plannedEnd"  class="text-[17px] font-bold text-main dark:text-second flex gap-[10px]"><span class="w-[120px] text-start">Planlanmış Bitiş:</span> <span class="semibold text-[16px] text-black dark:text-white">{{ borrowedBook.plannedEnd }}</span></span>
+                            <span class="text-[17px] font-bold text-main dark:text-second flex gap-[10px]"><span class="w-[120px] text-start">Başlangıç Tarihi:</span> <span style="letter-spacing: 2px;"  class="semibold text-[16px] text-black dark:text-white">{{ formatDate(borrowedBook.rentStart) }}</span></span>
+                            <span v-if="borrowedBook.plannedEnd"  class="text-[17px] font-bold text-main dark:text-second flex gap-[10px]"><span class="w-[120px] text-start">Planlanmış Bitiş:</span> <span style="letter-spacing: 2px;" class="semibold text-[16px] text-black dark:text-white">{{ formatDate(borrowedBook.plannedEnd) }}</span></span>
                             <span class="text-[17px] font-bold text-main dark:text-second flex gap-[10px]"><span class="w-[120px] text-start">Kullanıcı:</span> <span class="semibold text-[16px] text-black dark:text-white">{{ users.find(x => x._id == borrowedBook.userId).username }}</span></span> 
                             <span class="text-[17px] font-bold text-main dark:text-second flex gap-[10px] justify-start items-start"><span class="w-[120px] text-start">Kitap:</span> <span class="semibold text-[16px] text-black dark:text-white">{{ books.find(x => x._id == borrowedBook.bookId).name }}</span></span>
                         </div>
